@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright(c) 2022 mehdi.lefebvre@gmail.com
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:element name="name" type="xs:string"/>
+    <xs:element name="ditamap" type="xs:string"/>
+    <xs:element name="stylesheet" type="xs:string"/>
+    <xs:element name="file" type="xs:string"/>
+
+    <xs:attribute name="version" type="xs:string"/>
+
+    <xs:element name="files">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="file" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="items">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="item" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="item">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="ditamap" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="files" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="stylesheet" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="manifest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="items" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="stylesheet" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute ref="version" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
