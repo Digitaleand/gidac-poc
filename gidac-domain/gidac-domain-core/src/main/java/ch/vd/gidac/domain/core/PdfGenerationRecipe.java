@@ -79,6 +79,9 @@ public class PdfGenerationRecipe {
    */
   private final ZipManager zipManager;
 
+  /**
+   * This is the specification to use to check if the archive is processable.
+   */
   private final Specification<Path> processableSpecification;
 
   /**
