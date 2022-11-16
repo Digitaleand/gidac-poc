@@ -22,8 +22,16 @@
 
 package ch.vd.gidac.domain.core.compress;
 
-import java.io.File;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Default implementation of the zip manager.
@@ -32,23 +40,41 @@ import java.nio.file.Path;
  * @since 0.0.1
  */
 public class DefaultZipManager implements ZipManager {
-  @Override
-  public void zip (Path path) {
+    @Override
+    public void zip(Path path) {
 
-  }
+    }
 
-  @Override
-  public void zip (File file) {
+    @Override
+    public void zip(File file) {
 
-  }
+    }
 
-  @Override
-  public void unzip (byte[] content, Path path) {
+    private void extract(final Path path, final ZipArchiveInputStream za) throws IOException {
+        ZipEntry zipEntry;
+        while ((zipEntry = za.getNextZipEntry()) != null) {
+            final var file = path.resolve(zipEntry.getName());
+            if (zipEntry.isDirectory()) {
+                Files.createDirectories(file);
+            } else {
+                try (final var fos = new FileOutputStream(file.toFile())) {
+                    IOUtils.copy(za, fos);
+                }
+            }
+        }
+    }
 
-  }
+    @Override
+    public void unzip(byte[] content, Path path) throws IOException {
+        try(final var za = new ZipArchiveInputStream(new ByteArrayInputStream(content))) {
+            extract(path, za);
+        }
+    }
 
-  @Override
-  public void unzip (File file, Path path) {
-
-  }
+    @Override
+    public void unzip(final File zipFile, final Path path) throws IOException {
+        try (final var za = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
+            extract(path, za);
+        }
+    }
 }

@@ -41,6 +41,11 @@
             <artifactId>gidac-domain-manifest</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.21</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -22,6 +22,8 @@
 
 package ch.vd.gidac.domain.core;
 
+import ch.vd.gidac.domain.core.compress.DefaultZipManager;
+import ch.vd.gidac.domain.core.compress.ZipManager;
 import ch.vd.gidac.domain.core.fs.DefaultFsManager;
 import ch.vd.gidac.domain.core.fs.FsManager;
 import ch.vd.gidac.domain.manifest.Manifest;
@@ -69,6 +71,8 @@ public class PdfGenerationRecipe {
    */
   private final FsManager fsManager;
 
+  private final ZipManager zipManager;
+
   /**
    * Create a new recipe to generate a pdf.
    *
@@ -81,6 +85,7 @@ public class PdfGenerationRecipe {
     this.requestId = requestId;
     this.archive = archive;
     fsManager = new DefaultFsManager( requestId );
+    zipManager = new DefaultZipManager();
   }
 
   /**
@@ -142,7 +147,8 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if something goes wrong during the process.
    */
-  public PdfGenerationRecipe extract () {
+  public PdfGenerationRecipe extract () throws IOException {
+    zipManager.unzip(archive.bytes(), fsManager.getOutputDirectory());
     return this;
   }
 
