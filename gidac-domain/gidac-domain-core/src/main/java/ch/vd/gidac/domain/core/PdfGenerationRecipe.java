@@ -26,6 +26,8 @@ import ch.vd.gidac.domain.core.compress.DefaultZipManager;
 import ch.vd.gidac.domain.core.compress.ZipManager;
 import ch.vd.gidac.domain.core.fs.DefaultFsManager;
 import ch.vd.gidac.domain.core.fs.FsManager;
+import ch.vd.gidac.domain.core.specifications.IsProcessableArchiveSpecification;
+import ch.vd.gidac.domain.core.specifications.Specification;
 import ch.vd.gidac.domain.manifest.Manifest;
 import ch.vd.gidac.domain.manifest.ManifestUnmarshaller;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -34,6 +36,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static ch.vd.gidac.domain.manifest.ManifestDecorator.MANIFEST_FILE_NAME;
@@ -71,7 +74,12 @@ public class PdfGenerationRecipe {
    */
   private final FsManager fsManager;
 
+  /**
+   * Manager to use during the process to interact with zip items
+   */
   private final ZipManager zipManager;
+
+  private final Specification<Path> processableSpecification;
 
   /**
    * Create a new recipe to generate a pdf.
@@ -86,6 +94,7 @@ public class PdfGenerationRecipe {
     this.archive = archive;
     fsManager = new DefaultFsManager( requestId );
     zipManager = new DefaultZipManager();
+    processableSpecification = new IsProcessableArchiveSpecification();
   }
 
   /**
@@ -204,7 +213,7 @@ public class PdfGenerationRecipe {
    * @return {@code true} if the recipe can be baked or {@code false} otherwise.
    */
   public boolean canProcess () {
-    return false;
+    return processableSpecification.isSatisfiedBy(fsManager.getOutputDirectory());
   }
 
   /**
