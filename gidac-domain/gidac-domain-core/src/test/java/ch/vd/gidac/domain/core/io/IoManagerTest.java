@@ -35,18 +35,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IoManagerTest {
 
-    @Test
-    void checkFileCreation() throws IOException {
-        final var root = Paths.get("/tmp/gidac", UUID.randomUUID().toString(), "output");
-        //FileUtils.createParentDirectories(root.toFile());
-        final var dir = Files.createDirectories(root);
-        final var file = Files.createFile(dir.resolve("output.txt"));
-        assertNotNull(dir);
-        assertTrue(dir.toFile().exists());
-        assertTrue(dir.toFile().isDirectory());
-        assertNotNull(file);
-        assertTrue(file.toFile().exists());
-        assertTrue(file.toFile().isFile());
+  @Test
+  void checkFileCreation() throws IOException {
+    final var root = Paths.get( "/tmp/gidac", UUID.randomUUID().toString(), "output" );
+    //FileUtils.createParentDirectories(root.toFile());
+    final var dir = Files.createDirectories( root );
+    final var file = Files.createFile( dir.resolve( "output.txt" ) );
+    assertNotNull( dir );
+    assertTrue( dir.toFile().exists() );
+    assertTrue( dir.toFile().isDirectory() );
+    assertNotNull( file );
+    assertTrue( file.toFile().exists() );
+    assertTrue( file.toFile().isFile() );
 
-    }
+  }
 }

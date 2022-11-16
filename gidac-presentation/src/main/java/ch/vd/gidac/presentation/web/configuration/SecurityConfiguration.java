@@ -44,7 +44,7 @@ public class SecurityConfiguration {
    * @throws Exception if anything goes wrong during the setup process.
    */
   @Bean
-  SecurityFilterChain filterChain (final HttpSecurity http) throws Exception {
+  SecurityFilterChain filterChain( final HttpSecurity http ) throws Exception {
     http
         // CSRF configuration
         .antMatcher( "/**" ).csrf().disable()

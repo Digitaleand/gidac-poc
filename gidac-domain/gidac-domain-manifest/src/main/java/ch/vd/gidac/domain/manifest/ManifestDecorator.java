@@ -39,27 +39,27 @@ public class ManifestDecorator {
 
   private final Manifest manifest;
 
-  public ManifestDecorator (final Manifest manifest) {
+  public ManifestDecorator( final Manifest manifest ) {
     this.manifest = manifest;
   }
 
-  public String getVersion () {
+  public String getVersion() {
     return manifest.version;
   }
 
-  public List<Item> getItems () {
+  public List<Item> getItems() {
     return manifest.getItems().getItem();
   }
 
-  public Stream<Item> getItemsStream () {
+  public Stream<Item> getItemsStream() {
     return getItems().stream();
   }
 
-  public List<String> getFiles (final Item item) {
+  public List<String> getFiles( final Item item ) {
     return item.getFiles().file;
   }
 
-  public Stream<String> getFilesStream (final Item item) {
+  public Stream<String> getFilesStream( final Item item ) {
     return item.getFiles().file.stream();
   }
 }

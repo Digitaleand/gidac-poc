@@ -31,7 +31,7 @@ import java.util.UUID;
  *
  * @version 0.0.1
  */
-public record RequestId( UUID value ) {
+public record RequestId(UUID value) {
 
   /**
    * Factory used to generate the requestId from a string.
@@ -40,7 +40,7 @@ public record RequestId( UUID value ) {
    *
    * @return on instance of the requestId
    */
-  public static RequestId fromString (final String value) {
+  public static RequestId fromString( final String value ) {
     return new RequestId( UUID.fromString( value ) );
   }
 
@@ -49,12 +49,12 @@ public record RequestId( UUID value ) {
    *
    * @return a fresh instance of a randomly generated requestId.
    */
-  public static RequestId generate () {
+  public static RequestId generate() {
     return new RequestId( UUID.randomUUID() );
   }
 
   @Override
-  public String toString () {
+  public String toString() {
     return value.toString();
   }
 }

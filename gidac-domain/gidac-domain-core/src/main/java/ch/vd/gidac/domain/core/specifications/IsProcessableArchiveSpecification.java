@@ -35,10 +35,10 @@ import java.util.function.Predicate;
  */
 public class IsProcessableArchiveSpecification implements Specification<Path> {
 
-    private final Predicate<Path> manifestExists = new ManifestExistsPolicy();
+  private final Predicate<Path> manifestExists = new ManifestExistsPolicy();
 
-    @Override
-    public boolean isSatisfiedBy(final Path payload) {
-        return manifestExists.test(payload);
-    }
+  @Override
+  public boolean isSatisfiedBy( final Path payload ) {
+    return manifestExists.test( payload );
+  }
 }

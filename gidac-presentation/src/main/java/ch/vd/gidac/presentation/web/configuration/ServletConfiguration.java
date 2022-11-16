@@ -46,7 +46,7 @@ public class ServletConfiguration {
   @Value("${application.context.request.requestIdHeader}")
   String requestIdHeaderName;
 
-  public ServletConfiguration (final IdGenerator idGenerator) {
+  public ServletConfiguration( final IdGenerator idGenerator ) {
     this.idGenerator = idGenerator;
   }
 
@@ -56,7 +56,7 @@ public class ServletConfiguration {
    * @return an instance of the filter.
    */
   @Bean
-  FilterRegistrationBean<RequestIdFilter> requestIdFilter () {
+  FilterRegistrationBean<RequestIdFilter> requestIdFilter() {
     log.trace( "Setting up the requestId filter" );
     final FilterRegistrationBean<RequestIdFilter> registrationBean =
         new FilterRegistrationBean<>();
@@ -73,7 +73,7 @@ public class ServletConfiguration {
    * @return the bean definition
    */
   @Bean
-  FilterRegistrationBean<LoggingContextEnricherFilter> loggingContextFilter () {
+  FilterRegistrationBean<LoggingContextEnricherFilter> loggingContextFilter() {
     log.trace( "Setting up the loggingContext filter" );
     final FilterRegistrationBean<LoggingContextEnricherFilter> registrationBean =
         new FilterRegistrationBean<>();

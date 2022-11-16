@@ -38,46 +38,46 @@ class ManifestDecoratorTest {
   private static ManifestDecorator decorator;
 
   @BeforeAll
-  static void setUp () throws JAXBException, IOException {
+  static void setUp() throws JAXBException, IOException {
     final var jaxbContext = JAXBContext.newInstance( Manifest.class );
     final var unmarshaller = jaxbContext.createUnmarshaller();
-    try (final var is =
-             ManifestDecoratorTest.class.getClassLoader().getResourceAsStream( "samples/manifest.xml" )) {
+    try ( final var is =
+              ManifestDecoratorTest.class.getClassLoader().getResourceAsStream( "samples/manifest.xml" ) ) {
       assertNotNull( is, "The input stream must be defined" );
-      manifest = (Manifest) unmarshaller.unmarshal( is );
+      manifest = ( Manifest ) unmarshaller.unmarshal( is );
       decorator = new ManifestDecorator( manifest );
-    } catch (final Exception e) {
+    } catch ( final Exception e ) {
       fail( e.getMessage() );
       throw e;
     }
   }
 
   @Test
-  void decorateVersion () {
+  void decorateVersion() {
     assertEquals( "1.0", decorator.getVersion() );
   }
 
   @Test
-  void getItemList () {
+  void getItemList() {
     assertNotNull( decorator.getItems() );
     assertEquals( 2, decorator.getItems().size() );
   }
 
   @Test
-  void getItemStream () {
+  void getItemStream() {
     assertNotNull( decorator.getItemsStream() );
     assertEquals( 2, decorator.getItemsStream().toList().size() );
   }
 
   @Test
-  void getFileList () {
+  void getFileList() {
     final var item = manifest.items.item.get( 0 );
     assertNotNull( decorator.getFiles( item ) );
     assertEquals( 3, decorator.getFiles( item ).size() );
   }
 
   @Test
-  void getFileStream () {
+  void getFileStream() {
     final var item = manifest.items.item.get( 1 );
     assertNotNull( decorator.getFilesStream( item ) );
     assertEquals( 3, decorator.getFilesStream( item ).toList().size() );

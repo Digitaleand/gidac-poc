@@ -24,6 +24,7 @@ package ch.vd.gidac.presentation.web.configuration;
 
 import ch.vd.gidac.application.generatepdf.DefaultGeneratePdfRequestHandler;
 import ch.vd.gidac.application.generatepdf.GeneratePdfRequestHandler;
+import ch.vd.gidac.domain.core.pdf.PdfGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,13 +37,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationConfiguration {
 
+  @Bean
+  PdfGenerator pdfGenerator() {
+    return null;
+  }
+
   /**
    * Defines the pdf generation handler to use in the application.
    *
    * @return the instance of the request handler.
    */
   @Bean
-  GeneratePdfRequestHandler generatePdfRequestHandler () {
-    return new DefaultGeneratePdfRequestHandler();
+  GeneratePdfRequestHandler generatePdfRequestHandler() {
+    return new DefaultGeneratePdfRequestHandler( pdfGenerator() );
   }
 }

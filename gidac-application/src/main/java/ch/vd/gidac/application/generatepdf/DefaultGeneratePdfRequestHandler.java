@@ -25,39 +25,48 @@ package ch.vd.gidac.application.generatepdf;
 import ch.vd.gidac.domain.core.PdfGenerationRecipe;
 import ch.vd.gidac.domain.core.RequestId;
 import ch.vd.gidac.domain.core.SimplePdfGenerationRecipeFactory;
+import ch.vd.gidac.domain.core.pdf.PdfGenerator;
 
 public class DefaultGeneratePdfRequestHandler implements GeneratePdfRequestHandler {
 
+  private final PdfGenerator pdfGenerator;
+
+  public DefaultGeneratePdfRequestHandler( final PdfGenerator pdfGenerator ) {
+    this.pdfGenerator = pdfGenerator;
+  }
+
   @Override
-  public GeneratePdfResponse handleRequest (GeneratePdfRequest request) {
+  public GeneratePdfResponse handleRequest( GeneratePdfRequest request ) {
     PdfGenerationRecipe recipe = null;
     try {
       final var factory = new SimplePdfGenerationRecipeFactory();
       factory.requestId( RequestId.fromString( request.requestId() ) )
           .archive( request.archive() );
-      if (!factory.canCreate()) {
+      if ( !factory.canCreate() ) {
         return new GeneratePdfResponse( request, null,
             new IllegalStateException( "The recipe cannot be created" ) );
       }
-      recipe = factory.create()
+      recipe = factory
+          .create()
           .setUp()
           .extract();
-      if (!recipe.canProcess()) {
+      if ( !recipe.canProcess() ) {
         return new GeneratePdfResponse( request, null,
             new IllegalStateException( "The recipe cannot be baked" ) );
       }
-      final var binary = recipe.prepare()
-          .bake()
+      final var binary = recipe
+          .prepare()
+          .bake( pdfGenerator )
           .pack()
           .getBinary();
       return new GeneratePdfResponse( request, binary, null );
-    } catch (final Exception e) {
+    } catch ( final Exception e ) {
       return new GeneratePdfResponse( request, null, e );
     } finally {
-      if (null != recipe) {
+      if ( null != recipe ) {
         try {
           recipe.cleanUp();
-        } catch (final Exception ignore) {
+        } catch ( final Exception ignore ) {
           // ignoring error here since this is due to underlying implementation without any value for the client.
         }
       }

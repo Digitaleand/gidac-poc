@@ -22,6 +22,9 @@
 
 package ch.vd.gidac.domain.core.pdf;
 
+import ch.vd.gidac.domain.core.DitaMap;
+import ch.vd.gidac.domain.core.WorkingDirectory;
+
 /**
  * Definition for an object that generate pdf.
  *
@@ -29,4 +32,12 @@ package ch.vd.gidac.domain.core.pdf;
  * @since 0.0.1
  */
 public interface PdfGenerator {
+
+  /**
+   * Generate a pdf using an input path, a ditamap and an output to push data to.
+   *
+   * @param directory the working directory of the processing.
+   * @param ditaMap   the ditamap to process.
+   */
+  void generatePdf( WorkingDirectory directory, DitaMap ditaMap );
 }

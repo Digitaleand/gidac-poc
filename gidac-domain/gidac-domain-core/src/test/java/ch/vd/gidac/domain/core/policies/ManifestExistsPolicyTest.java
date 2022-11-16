@@ -44,7 +44,7 @@ class ManifestExistsPolicyTest {
     final var result = policy.test( p );
 
     // THEN
-    assertTrue(result);
+    assertTrue( result );
     Files.delete( manifest );
     Files.delete( p );
   }

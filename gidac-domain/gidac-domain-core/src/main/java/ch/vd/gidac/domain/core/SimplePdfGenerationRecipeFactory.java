@@ -41,26 +41,26 @@ public class SimplePdfGenerationRecipeFactory implements PdfGenerationRecipeFact
   private RequestId requestId;
 
   @Override
-  public boolean canCreate () {
+  public boolean canCreate() {
     return archiveValidPolicy.test( archive ) && requestIdPolicy.test( requestId );
   }
 
   @Override
-  public PdfGenerationRecipe create () {
-    if (!canCreate()) {
+  public PdfGenerationRecipe create() {
+    if ( !canCreate() ) {
       throw new IllegalStateException( "The recipe cannot be generate with the curently defined state" );
     }
     return new PdfGenerationRecipe( requestId, archive );
   }
 
   @Override
-  public PdfGenerationRecipeFactory archive (Archive archive) {
+  public PdfGenerationRecipeFactory archive( Archive archive ) {
     this.archive = archive;
     return this;
   }
 
   @Override
-  public PdfGenerationRecipeFactory requestId (RequestId requestId) {
+  public PdfGenerationRecipeFactory requestId( RequestId requestId ) {
     this.requestId = requestId;
     return this;
   }

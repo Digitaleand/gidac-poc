@@ -38,14 +38,14 @@ public class ManifestUnmarshaller {
 
   private final Unmarshaller unmarshaller;
 
-  public ManifestUnmarshaller () throws JAXBException {
+  public ManifestUnmarshaller() throws JAXBException {
     final var jaxbContext = JAXBContext.newInstance( Manifest.class );
     unmarshaller = jaxbContext.createUnmarshaller();
   }
 
-  public Manifest unmarshall (final InputStream inputStream, boolean autoClose) throws JAXBException, IOException {
-    final var manifest = (Manifest) unmarshaller.unmarshal( inputStream );
-    if (autoClose) {
+  public Manifest unmarshall( final InputStream inputStream, boolean autoClose ) throws JAXBException, IOException {
+    final var manifest = ( Manifest ) unmarshaller.unmarshal( inputStream );
+    if ( autoClose ) {
       inputStream.close();
     }
     return manifest;

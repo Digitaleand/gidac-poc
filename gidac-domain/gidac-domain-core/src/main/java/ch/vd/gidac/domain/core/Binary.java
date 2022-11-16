@@ -22,6 +22,9 @@
 
 package ch.vd.gidac.domain.core;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Represents a binary content to send back to the client.
  *
@@ -29,4 +32,36 @@ package ch.vd.gidac.domain.core;
  * @since 0.0.1
  */
 public record Binary(String mimeType, String name, byte[] payload) {
+
+  @Override
+  public boolean equals( Object o ) {
+    if ( this == o ) {
+      return true;
+    }
+    if ( o == null || getClass() != o.getClass() ) {
+      return false;
+    }
+    final Binary binary = ( Binary ) o;
+    return mimeType.equals( binary.mimeType ) && name.equals( binary.name ) && Arrays.equals( payload, binary.payload );
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hash( mimeType, name );
+    result = 31 * result + Arrays.hashCode( payload );
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Binary{" +
+        "mimeType='" + mimeType + '\'' +
+        ", name='" + name + '\'' +
+        ", payload=" + Arrays.toString( payload ) +
+        '}';
+  }
+
+  public static Binary create( final String mimeType, final String name, final byte[] payload) {
+    return new Binary( mimeType, name, payload );
+  }
 }

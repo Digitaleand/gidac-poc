@@ -33,6 +33,24 @@
 
     <artifactId>gidac-processing-chemistry</artifactId>
 
-    <properties />
+    <properties/>
+
+    <dependencies>
+        <dependency>
+            <groupId>ch.vd.gidac</groupId>
+            <artifactId>gidac-domain-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.vd.gidac</groupId>
+            <artifactId>gidac-domain-manifest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>1.3</version>
+        </dependency>
+    </dependencies>
 
 </project>

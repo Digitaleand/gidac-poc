@@ -41,5 +41,5 @@ public interface RequestHandler<I, O> {
    *
    * @throws RuntimeException raised if an error occurred during the processing.
    */
-  O handleRequest (I request);
+  O handleRequest( I request );
 }

@@ -23,15 +23,19 @@
 package ch.vd.gidac.domain.core.compress;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Default implementation of the zip manager.
@@ -40,41 +44,58 @@ import java.util.zip.ZipInputStream;
  * @since 0.0.1
  */
 public class DefaultZipManager implements ZipManager {
-    @Override
-    public void zip(Path path) {
+  @Override
+  public File zip( final Path path ) throws IOException {
+    final var filename = path.resolve( UUID.randomUUID() + ".zip" );
+    try ( final var os = Files.newOutputStream( filename );
+          final var as = new ZipArchiveOutputStream( os ) ) {
+      try ( final var s = Files.list( path ) ) {
+        s.map( Path::toFile ).forEach( f -> {
+          try {
+            final var entry = as.createArchiveEntry( f, f.getName() );
+            as.putArchiveEntry( entry );
 
-    }
-
-    @Override
-    public void zip(File file) {
-
-    }
-
-    private void extract(final Path path, final ZipArchiveInputStream za) throws IOException {
-        ZipEntry zipEntry;
-        while ((zipEntry = za.getNextZipEntry()) != null) {
-            final var file = path.resolve(zipEntry.getName());
-            if (zipEntry.isDirectory()) {
-                Files.createDirectories(file);
-            } else {
-                try (final var fos = new FileOutputStream(file.toFile())) {
-                    IOUtils.copy(za, fos);
-                }
+            if ( f.isFile() ) {
+              try ( final var fis = Files.newInputStream( f.toPath() ) ) {
+                IOUtils.copy( fis, as );
+              }
             }
-        }
+            as.closeArchiveEntry();
+          } catch ( IOException e ) {
+            throw new RuntimeException( e );
+          }
+        } );
+      }
+      as.finish();
+      return filename.toFile();
     }
+  }
 
-    @Override
-    public void unzip(byte[] content, Path path) throws IOException {
-        try(final var za = new ZipArchiveInputStream(new ByteArrayInputStream(content))) {
-            extract(path, za);
+  private void extract( final Path path, final ZipArchiveInputStream za ) throws IOException {
+    ZipEntry zipEntry;
+    while ( ( zipEntry = za.getNextZipEntry() ) != null ) {
+      final var file = path.resolve( zipEntry.getName() );
+      if ( zipEntry.isDirectory() ) {
+        Files.createDirectories( file );
+      } else {
+        try ( final var fos = new FileOutputStream( file.toFile() ) ) {
+          IOUtils.copy( za, fos );
         }
+      }
     }
+  }
 
-    @Override
-    public void unzip(final File zipFile, final Path path) throws IOException {
-        try (final var za = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
-            extract(path, za);
-        }
+  @Override
+  public void unzip( byte[] content, Path path ) throws IOException {
+    try ( final var za = new ZipArchiveInputStream( new ByteArrayInputStream( content ) ) ) {
+      extract( path, za );
     }
+  }
+
+  @Override
+  public void unzip( final File zipFile, final Path path ) throws IOException {
+    try ( final var za = new ZipArchiveInputStream( new BufferedInputStream( new FileInputStream( zipFile ) ) ) ) {
+      extract( path, za );
+    }
+  }
 }

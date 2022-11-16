@@ -48,7 +48,7 @@ public class ArchiveValidPolicy implements Predicate<Archive> {
       .and( withOriginalName );
 
   @Override
-  public boolean test (final Archive archive) {
+  public boolean test( final Archive archive ) {
     return recipe.test( archive );
   }
 }

@@ -51,76 +51,76 @@ public class DefaultFsManager implements FsManager {
    *
    * @param requestId the unique id of the process
    */
-  public DefaultFsManager (final RequestId requestId) {
+  public DefaultFsManager( final RequestId requestId ) {
     this.requestId = requestId;
   }
 
   @Override
-  public RequestId getRequestId () {
+  public RequestId getRequestId() {
     return requestId;
   }
 
   @Override
-  public Path getWorkingDirectory () {
+  public Path getWorkingDirectory() {
     return workingDirectory;
   }
 
   @Override
-  public Path getInputDirectory () {
+  public Path getInputDirectory() {
     return inputDirectory;
   }
 
   @Override
-  public Path getOutputDirectory () {
+  public Path getOutputDirectory() {
     return outputDirectory;
   }
 
   @Override
-  public void init () throws IOException {
+  public void init() throws IOException {
     workingDirectory = Files.createTempDirectory( requestId.value().toString() );
     inputDirectory = Files.createDirectory( workingDirectory.resolve( INPUT_DIRECTORY ) );
     outputDirectory = Files.createDirectory( workingDirectory.resolve( OUTPUT_DIRECTORY ) );
   }
 
   @Override
-  public void cleanup () throws IOException {
+  public void cleanup() throws IOException {
     Files.deleteIfExists( outputDirectory );
     Files.deleteIfExists( inputDirectory );
     Files.deleteIfExists( workingDirectory );
   }
 
   @Override
-  public void storeContent (byte[] content, String name, FsLocation location) {
+  public void storeContent( byte[] content, String name, FsLocation location ) {
     // Check if the file exists.
     Path p;
-    switch (location) {
+    switch ( location ) {
       case INPUT -> p = inputDirectory;
       case OUTPUT -> p = outputDirectory;
       default -> p = workingDirectory;
     }
     final var file = p.resolve( name );
-    if ( Files.exists( file )) {
-      throw new IllegalStateException("The name with name " + name + " already exists in " + p );
+    if ( Files.exists( file ) ) {
+      throw new IllegalStateException( "The name with name " + name + " already exists in " + p );
     }
-    try (final var fos = new FileOutputStream( file.toFile() )) {
+    try ( final var fos = new FileOutputStream( file.toFile() ) ) {
       IOUtils.write( content, fos );
-    } catch(Exception e) {
-      throw new RuntimeException(e);
+    } catch ( Exception e ) {
+      throw new RuntimeException( e );
     }
   }
 
   @Override
-  public void lock () {
+  public void lock() {
     // For now, we are generating a fresh working directory each time.
   }
 
   @Override
-  public void unlock () {
+  public void unlock() {
     // For now, we are generating a fresh working directory each time.
   }
 
   @Override
-  public boolean isLocked () {
+  public boolean isLocked() {
     // For now, we are generating a fresh working directory each time.
     return false;
   }

@@ -49,16 +49,16 @@ public interface FsManager {
 
     private final int value;
 
-    FsLocation (int value) {
+    FsLocation( int value ) {
       this.value = value;
     }
 
-    public int getValue () {
+    public int getValue() {
       return value;
     }
 
     @Override
-    public String toString () {
+    public String toString() {
       return Integer.toString( value );
     }
   }
@@ -68,14 +68,14 @@ public interface FsManager {
    *
    * @return the instance of the request id.
    */
-  RequestId getRequestId ();
+  RequestId getRequestId();
 
   /**
    * Get the absolute path to the working directory.
    *
    * @return the absolute path to the working directory
    */
-  Path getWorkingDirectory ();
+  Path getWorkingDirectory();
 
   /**
    * Get the input directory.
@@ -84,32 +84,32 @@ public interface FsManager {
    *
    * @return the input directory.
    */
-  Path getInputDirectory ();
+  Path getInputDirectory();
 
   /**
    * Get the output directory.
    *
    * <p>This is the directory where all outputs files (generated pdfs) will be stored before processing.<br/>The
-   * archive to send to the the client may be also stored in this directory if the system is not processed
-   * in memory.</p>
+   * archive to send to the the client may be also stored in this directory if the system is not processed in
+   * memory.</p>
    *
    * @return the output directory.
    */
-  Path getOutputDirectory ();
+  Path getOutputDirectory();
 
   /**
    * Initialize the working directory.
    *
    * @throws IOException raise if something goes wrong during the preparation of the file system.
    */
-  void init () throws IOException;
+  void init() throws IOException;
 
   /**
    * Clean up the working directory.
    *
    * @throws IOException raise if something goes wrong during the preparation of the file system.
    */
-  void cleanup () throws IOException;
+  void cleanup() throws IOException;
 
   /**
    * Store a content in a file with name {@code name} at a given location in the working directory.
@@ -118,7 +118,7 @@ public interface FsManager {
    * @param name     the name of the file to save to.
    * @param location the location to save the content.
    */
-  void storeContent (byte[] content, String name, FsLocation location);
+  void storeContent( byte[] content, String name, FsLocation location );
 
   /**
    * Store a string content in a file with name {@code name} at a given location in the working directory.
@@ -127,7 +127,7 @@ public interface FsManager {
    * @param name     the name of the file to save to
    * @param location the location of the content.
    */
-  default void storeContent (final String content, final String name, final FsLocation location) {
+  default void storeContent( final String content, final String name, final FsLocation location ) {
     storeContent( content.getBytes( StandardCharsets.UTF_8 ), name, location );
   }
 

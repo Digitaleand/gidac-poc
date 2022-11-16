@@ -24,12 +24,14 @@ package ch.vd.gidac.domain.core;
 
 import ch.vd.gidac.domain.core.compress.DefaultZipManager;
 import ch.vd.gidac.domain.core.compress.ZipManager;
-import ch.vd.gidac.domain.core.fs.DefaultFsManager;
-import ch.vd.gidac.domain.core.fs.FsManager;
+import ch.vd.gidac.domain.core.pdf.PdfGenerator;
 import ch.vd.gidac.domain.core.specifications.IsProcessableArchiveSpecification;
 import ch.vd.gidac.domain.core.specifications.Specification;
+import ch.vd.gidac.domain.manifest.Item;
 import ch.vd.gidac.domain.manifest.Manifest;
+import ch.vd.gidac.domain.manifest.ManifestDecorator;
 import ch.vd.gidac.domain.manifest.ManifestUnmarshaller;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -38,8 +40,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static ch.vd.gidac.domain.manifest.ManifestDecorator.MANIFEST_FILE_NAME;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Aggregate and root entity which defines the processing of an archive to generate a pdf.
@@ -70,9 +72,19 @@ public class PdfGenerationRecipe {
   private Manifest manifest;
 
   /**
-   * Reference to the fs manager which wraps all access to the file system.
+   * Reader for the manifest
    */
-  private final FsManager fsManager;
+  private ManifestDecorator reader;
+
+  /**
+   * List of dita maps processed during the transformation.
+   */
+  private List<DitaMap> ditaMaps = new ArrayList<>();
+
+  /**
+   * Reference to the working directory for the processing.
+   */
+  private WorkingDirectory workingDirectory;
 
   /**
    * Manager to use during the process to interact with zip items
@@ -92,10 +104,9 @@ public class PdfGenerationRecipe {
    * @param requestId the unique id of the process for which we are generating the binary.
    * @param archive   the archive to use to read info to generate the binary.
    */
-  PdfGenerationRecipe (final RequestId requestId, final Archive archive) {
+  PdfGenerationRecipe( final RequestId requestId, final Archive archive ) {
     this.requestId = requestId;
     this.archive = archive;
-    fsManager = new DefaultFsManager( requestId );
     zipManager = new DefaultZipManager();
     processableSpecification = new IsProcessableArchiveSpecification();
   }
@@ -105,7 +116,7 @@ public class PdfGenerationRecipe {
    *
    * @return the request id
    */
-  public RequestId getRequestId () {
+  public RequestId getRequestId() {
     return requestId;
   }
 
@@ -119,9 +130,9 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if the binary has not been generated at the moment of the call.
    */
-  public Binary getBinary () {
-    if (null == binary) {
-      throw new IllegalStateException("The recipe has not been baked");
+  public Binary getBinary() {
+    if ( null == binary ) {
+      throw new IllegalStateException( "The recipe has not been baked" );
     }
     return binary;
   }
@@ -131,7 +142,7 @@ public class PdfGenerationRecipe {
    *
    * @return the archive
    */
-  public Archive getArchive () {
+  public Archive getArchive() {
     return archive;
   }
 
@@ -145,10 +156,10 @@ public class PdfGenerationRecipe {
    */
   public PdfGenerationRecipe setUp() {
     try {
-      fsManager.init();
+      workingDirectory = WorkingDirectory.create( requestId );
       return this;
-    } catch (final IOException ioException) {
-      throw new RuntimeException(ioException);
+    } catch ( final IOException ioException ) {
+      throw new RuntimeException( ioException );
     }
   }
 
@@ -159,8 +170,8 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if something goes wrong during the process.
    */
-  public PdfGenerationRecipe extract () throws IOException {
-    zipManager.unzip(archive.bytes(), fsManager.getOutputDirectory());
+  public PdfGenerationRecipe extract() throws IOException {
+    zipManager.unzip( archive.bytes(), workingDirectory.inputDirectory() );
     return this;
   }
 
@@ -174,27 +185,58 @@ public class PdfGenerationRecipe {
   public PdfGenerationRecipe prepare() {
     try {
       final var unmarshaller = new ManifestUnmarshaller();
-      try (final var inputStream =
-          new FileInputStream( Paths.get( fsManager.getWorkingDirectory().toString(), MANIFEST_FILE_NAME ).toFile() )) {
+      try ( final var inputStream =
+                new FileInputStream( workingDirectory.getManifestFile() ) ) {
+
         manifest = unmarshaller.unmarshall( inputStream, false );
+        reader = new ManifestDecorator( manifest );
+
+        final var ditStream = reader.getItems()
+            .stream()
+            .map( Item::getDitamap )
+            .map( Paths::get )
+            .map( DitaMap::fromPath );
+
+        ditaMaps.addAll( ditStream.toList() );
       }
       return this;
-    } catch (final JAXBException | IOException jaxbException) {
-      throw new RuntimeException(jaxbException);
+    } catch ( final JAXBException | IOException jaxbException ) {
+      throw new RuntimeException( jaxbException );
     }
   }
 
   /**
    * Effective processing of the recipe.
    *
-   * <p>If there is more than one file to bake, the logic will go on the recipe itself.</p>
+   * <p>If there is more than one file to bake, all files will be processed one by one.</p>
+   * <p>For now, the process is sequential, it must be parallelized when we go on production.</p>
    *
    * @return the current instance of the recipe
    *
    * @throws RuntimeException if anything goes wrong during the process.
    */
-  public PdfGenerationRecipe bake () {
+  public PdfGenerationRecipe bake( final PdfGenerator pdfGenerator ) {
+    ditaMaps.forEach( ditaMap -> pdfGenerator.generatePdf( workingDirectory, ditaMap ) );
     return this;
+  }
+
+  private void createBinaryFromPath( final Path pdf ) throws IOException {
+    final var name = FilenameUtils.getName( pdf.toString() );
+    final var mime = "application/pdf"; // this should be adapted from the format
+    try ( final var fis = new FileInputStream( pdf.toFile() ) ) {
+      final var content = fis.readAllBytes();
+      binary = Binary.create( mime, name, content );
+    }
+  }
+
+  private void createBinaryFromOutput() throws IOException {
+    final var zip = zipManager.zip( workingDirectory.outputDirectory() );
+    final var name = zip.getName();
+    final var mime = "application/pdf";
+    try ( final var fis = new FileInputStream( zip ) ) {
+      final var content = fis.readAllBytes();
+      binary = Binary.create( mime, name, content );
+    }
   }
 
   /**
@@ -204,19 +246,26 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException thrown if something goes wrong during the process.
    */
-  public PdfGenerationRecipe pack () {
+  public PdfGenerationRecipe pack() throws IOException {
+    final var outputFiles = workingDirectory.listOutputFiles();
+    if ( outputFiles.size() == 1 ) {
+      createBinaryFromPath( outputFiles.get( 0 ) );
+    } else {
+      createBinaryFromOutput();
+    }
     return this;
   }
 
   /**
    * Check  if the recipe can be process.
    *
-   * <p>This call MUST be made after extracting the archive since it checks if the content of the archive is correct.</p>
-
+   * <p>This call MUST be made after extracting the archive since it checks if the content of the archive is
+   * correct.</p>
+   *
    * @return {@code true} if the recipe can be baked or {@code false} otherwise.
    */
-  public boolean canProcess () {
-    return processableSpecification.isSatisfiedBy(fsManager.getOutputDirectory());
+  public boolean canProcess() {
+    return processableSpecification.isSatisfiedBy( workingDirectory.inputDirectory() );
   }
 
   /**
@@ -226,21 +275,22 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException may occur if something goes wrong during the process.
    */
-  public PdfGenerationRecipe cleanUp () {
+  public PdfGenerationRecipe cleanUp() throws IOException {
+    workingDirectory.cleanup();
     return this;
   }
 
   @Override
-  public boolean equals (Object o) {
-    if (this == o) {
+  public boolean equals( Object o ) {
+    if ( this == o ) {
       return true;
     }
 
-    if (o == null || getClass() != o.getClass()) {
+    if ( o == null || getClass() != o.getClass() ) {
       return false;
     }
 
-    final var recipe = (PdfGenerationRecipe) o;
+    final var recipe = ( PdfGenerationRecipe ) o;
 
     return new EqualsBuilder()
         .append( requestId, recipe.requestId )
@@ -250,7 +300,7 @@ public class PdfGenerationRecipe {
   }
 
   @Override
-  public int hashCode () {
+  public int hashCode() {
     return new HashCodeBuilder( 17, 37 )
         .append( requestId )
         .append( archive )
@@ -259,7 +309,7 @@ public class PdfGenerationRecipe {
   }
 
   @Override
-  public String toString () {
+  public String toString() {
     return "PdfGenerationRecipe{" +
         "requestId=" + requestId.value().toString() +
         ", archive=" + archive.originalName() +

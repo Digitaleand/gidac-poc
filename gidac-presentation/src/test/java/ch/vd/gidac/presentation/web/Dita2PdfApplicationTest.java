@@ -28,6 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class Dita2PdfApplicationTest {
   @Test
-  void contextLoads () {
+  void contextLoads() {
   }
 }

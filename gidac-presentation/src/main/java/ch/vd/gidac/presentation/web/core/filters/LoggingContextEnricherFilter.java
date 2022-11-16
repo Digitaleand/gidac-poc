@@ -56,18 +56,18 @@ public class LoggingContextEnricherFilter extends OncePerRequestFilter {
    *
    * @param requestHeader the name of the header to fetch the correlation id into.
    */
-  public LoggingContextEnricherFilter (final String requestHeader) {
+  public LoggingContextEnricherFilter( final String requestHeader ) {
     this.requestHeader = requestHeader;
   }
 
   @Override
-  protected void doFilterInternal (final HttpServletRequest request,
+  protected void doFilterInternal( final HttpServletRequest request,
                                    final HttpServletResponse response,
-                                   final FilterChain filterChain)
+                                   final FilterChain filterChain )
       throws ServletException, IOException {
     log.trace( "Enriching the loggign context with request meta information" );
 
-    final var requestId = (String) request.getAttribute( requestHeader );
+    final var requestId = ( String ) request.getAttribute( requestHeader );
     try ( final CloseableThreadContext.Instance cti = CloseableThreadContext.put( "requestId",
         requestId ) ) {
       cti.put( "x-ml-test", "demo" );

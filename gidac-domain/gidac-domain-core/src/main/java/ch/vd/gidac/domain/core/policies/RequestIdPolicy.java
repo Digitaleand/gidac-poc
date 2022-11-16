@@ -37,7 +37,7 @@ public class RequestIdPolicy implements Predicate<RequestId> {
       .and( notBlankUuid );
 
   @Override
-  public boolean test (final RequestId requestId) {
+  public boolean test( final RequestId requestId ) {
     return recipe.test( requestId );
   }
 }

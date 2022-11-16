@@ -31,33 +31,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class IsProcessableArchiveSpecificationTest {
 
-    @Test
-    void checkProcessable() throws URISyntaxException {
-        // GIVEN
-        final var url = getClass().getClassLoader().getResource("processing");
-        assertNotNull(url);
-        final var path = Paths.get(url.toURI());
+  @Test
+  void checkProcessable() throws URISyntaxException {
+    // GIVEN
+    final var url = getClass().getClassLoader().getResource( "processing" );
+    assertNotNull( url );
+    final var path = Paths.get( url.toURI() );
 
-        // WHEN
-        final var specification = new IsProcessableArchiveSpecification();
-        final var result = specification.isSatisfiedBy(path);
+    // WHEN
+    final var specification = new IsProcessableArchiveSpecification();
+    final var result = specification.isSatisfiedBy( path );
 
-        // THEN
-        assertTrue(result);
-    }
+    // THEN
+    assertTrue( result );
+  }
 
-    @Test
-    void checkNonProcessable() throws URISyntaxException {
-        // GIVEN
-        final var url = getClass().getClassLoader().getResource("ditas");
-        assertNotNull(url);
-        final var path = Paths.get(url.toURI());
+  @Test
+  void checkNonProcessable() throws URISyntaxException {
+    // GIVEN
+    final var url = getClass().getClassLoader().getResource( "ditas" );
+    assertNotNull( url );
+    final var path = Paths.get( url.toURI() );
 
-        // WHEN
-        final var specification = new IsProcessableArchiveSpecification();
-        final var result = specification.isSatisfiedBy(path);
+    // WHEN
+    final var specification = new IsProcessableArchiveSpecification();
+    final var result = specification.isSatisfiedBy( path );
 
-        // THEN
-        assertFalse(result);
-    }
+    // THEN
+    assertFalse( result );
+  }
 }

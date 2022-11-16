@@ -34,5 +34,5 @@ package ch.vd.gidac.domain.core;
  * @version 0.0.1
  * @since 0.0.1
  */
-public record Archive( String name, String originalName, long size, byte[] bytes, String contentType ) {
+public record Archive(String name, String originalName, long size, byte[] bytes, String contentType) {
 }

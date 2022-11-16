@@ -25,19 +25,22 @@ package ch.vd.gidac.domain.core.specifications;
 /**
  * Specification building block.
  *
- * <p>This kind of elements is dedicated to perform some validation without mutating the internal state of entities.</p>
+ * <p>This kind of elements is dedicated to perform some validation without mutating the internal state of
+ * entities.</p>
  *
  * @param <T> the type of the content to check
+ *
  * @version 0.0.1
  * @since 0.0.1
  */
 public interface Specification<T> {
 
-    /**
-     * Check if the content is compliant with the specification.
-     *
-     * @param payload the payload to check
-     * @return {@code true} if the {@code payload} is compliant with the specification, {@code false} otherwise.
-     */
-    boolean isSatisfiedBy(T payload);
+  /**
+   * Check if the content is compliant with the specification.
+   *
+   * @param payload the payload to check
+   *
+   * @return {@code true} if the {@code payload} is compliant with the specification, {@code false} otherwise.
+   */
+  boolean isSatisfiedBy( T payload );
 }

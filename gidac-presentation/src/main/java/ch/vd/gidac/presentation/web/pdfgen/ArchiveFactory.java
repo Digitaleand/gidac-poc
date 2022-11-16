@@ -45,7 +45,7 @@ public class ArchiveFactory {
    *
    * @throws IOException raised if an error occurred when reading the file.
    */
-  public Archive toArchive (final MultipartFile file) throws IOException {
+  public Archive toArchive( final MultipartFile file ) throws IOException {
     return new Archive( file.getName(), file.getOriginalFilename(), file.getSize(),
         file.getBytes(), file.getContentType() );
   }

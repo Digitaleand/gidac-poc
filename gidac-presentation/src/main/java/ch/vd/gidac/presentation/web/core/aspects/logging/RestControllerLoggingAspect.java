@@ -46,7 +46,7 @@ public class RestControllerLoggingAspect extends SemanticAspectDefinition {
    * @param joinPoint the join point activated.
    */
   @Before("controllerMethodExecution()")
-  public void beforeExecuting (final JoinPoint joinPoint) {
+  public void beforeExecuting( final JoinPoint joinPoint ) {
     final var log = getLogger( joinPoint );
     log.info( "Executing {} on controller {}", joinPoint.getSignature().getDeclaringType().getSimpleName(),
         joinPoint.getSignature().getDeclaringTypeName() );
@@ -58,7 +58,7 @@ public class RestControllerLoggingAspect extends SemanticAspectDefinition {
    * @param joinPoint the join point activated.
    */
   @After("controllerMethodExecution()")
-  public void afterExecuting (final JoinPoint joinPoint) {
+  public void afterExecuting( final JoinPoint joinPoint ) {
     final var log = getLogger( joinPoint );
     log.info( "{}#{} Execution ended.", joinPoint.getSignature().getDeclaringType().getSimpleName(),
         joinPoint.getSignature().getName() );
@@ -71,7 +71,7 @@ public class RestControllerLoggingAspect extends SemanticAspectDefinition {
    * @param error     the error thrown by the process.
    */
   @AfterThrowing(pointcut = "controllerMethodExecution()", throwing = "error")
-  public void afterThrowing (final JoinPoint joinPoint, Throwable error) {
+  public void afterThrowing( final JoinPoint joinPoint, Throwable error ) {
     final var log = getLogger( joinPoint );
     log.warn( "An error occurred during the process with message: {}", error.getMessage() );
   }

@@ -40,22 +40,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationLoggingAspect extends SemanticAspectDefinition {
 
-  @Before( "requestHandlerLayerMethodExecution()" )
-  public void beforeExecution(final JoinPoint joinPoint) {
+  @Before("requestHandlerLayerMethodExecution()")
+  public void beforeExecution( final JoinPoint joinPoint ) {
     final var log = getLogger( joinPoint );
     log.info( "Executing the request handler on {}",
         joinPoint.getSignature().getDeclaringType().getSimpleName() );
   }
 
-  @After( "requestHandlerLayerMethodExecution()" )
-  public void afterExecution(final JoinPoint joinPoint) {
+  @After("requestHandlerLayerMethodExecution()")
+  public void afterExecution( final JoinPoint joinPoint ) {
     final var log = getLogger( joinPoint );
     log.info( "Executing the request handler on {}",
         joinPoint.getSignature().getDeclaringType().getSimpleName() );
   }
 
   @AfterThrowing(pointcut = "requestHandlerLayerMethodExecution()", throwing = "error")
-  public void afterThrowing (final JoinPoint joinPoint, Throwable error) {
+  public void afterThrowing( final JoinPoint joinPoint, Throwable error ) {
     final var log = getLogger( joinPoint );
     log.warn( "An error occurred during the process with message: {}", error.getMessage() );
   }

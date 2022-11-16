@@ -35,24 +35,24 @@ class ArchiveValidPolicyTest {
   private final ArchiveValidPolicy policy = new ArchiveValidPolicy();
 
   @Test
-  void archiveNull () {
+  void archiveNull() {
     assertFalse( policy.test( null ) );
   }
 
   @Test
-  void archiveWithoutPayload () {
-    final var archive = new Archive( "foo", "foo", 0, new byte[] {}, "application/zip" );
+  void archiveWithoutPayload() {
+    final var archive = new Archive( "foo", "foo", 0, new byte[]{ }, "application/zip" );
     assertFalse( policy.test( archive ) );
   }
 
   @Test
-  void archiveWithNullPayload () {
+  void archiveWithNullPayload() {
     final var archive = new Archive( "foo", "foo", 0, null, "application/zip" );
     assertFalse( policy.test( archive ) );
   }
 
   @Test
-  void archiveWithoutMimeType () {
+  void archiveWithoutMimeType() {
     final var archive = new Archive( "foo", "foo", 0, "test".getBytes( StandardCharsets.UTF_8 ),
         "" );
     assertFalse( policy.test( archive ) );

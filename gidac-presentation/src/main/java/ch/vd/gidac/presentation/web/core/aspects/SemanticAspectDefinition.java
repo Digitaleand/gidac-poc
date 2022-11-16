@@ -35,8 +35,7 @@ import java.time.Duration;
 import java.time.Instant;
 
 /**
- * Define all semantic naming convention used in our stack and create method to request some part of
- * the application.
+ * Define all semantic naming convention used in our stack and create method to request some part of the application.
  *
  * @version 0.0.1
  * @since 0.0.1
@@ -49,26 +48,30 @@ public abstract class SemanticAspectDefinition {
    * Define the execution of a domain method.
    */
   @Pointcut("execution(* ch.vd.gidac.domain.*.*(..))")
-  public void domainMethodExecution () {}
+  public void domainMethodExecution() {
+  }
 
   /**
-   * Define the execution of a controller method or anything placed in the web
-   * package of the presentation or in any of its children.
+   * Define the execution of a controller method or anything placed in the web package of the presentation or in any of
+   * its children.
    */
   @Pointcut("execution(* ch.vd.gidac.presentation.web.*.*(..)) || execution(* ch.vd.gidac.presentation.web.pdfgen.*.*(..))")
-  public void controllerMethodExecution () {}
+  public void controllerMethodExecution() {
+  }
 
   /**
    * Defines the execution of any method of any class in the application layer.
    */
   @Pointcut("execution(* ch.vd.gidac.application.*.*(..))")
-  public void applicationLayerMethodExecution () {}
+  public void applicationLayerMethodExecution() {
+  }
 
   /**
    * Defines the execution of any method of any request handler.
    */
   @Pointcut("execution(* ch.vd.gidac.application.*.*.handleRequest(..))")
-  public void requestHandlerLayerMethodExecution () {}
+  public void requestHandlerLayerMethodExecution() {
+  }
 
   /**
    * Fetch the logger for the given joinpoint.
@@ -77,7 +80,7 @@ public abstract class SemanticAspectDefinition {
    *
    * @return the instance of the logger associate to the class under process.
    */
-  protected Logger getLogger (final JoinPoint joinPoint) {
+  protected Logger getLogger( final JoinPoint joinPoint ) {
     return LogManager.getLogger( joinPoint.getSignature().getDeclaringType() );
   }
 
@@ -90,7 +93,7 @@ public abstract class SemanticAspectDefinition {
    * @return the result of the process.
    */
   @Around("controllerMethodExecution() || requestHandlerLayerMethodExecution()")
-  public Object aroundExecution (final ProceedingJoinPoint joinPoint) {
+  public Object aroundExecution( final ProceedingJoinPoint joinPoint ) {
     final var log = getLogger( joinPoint );
     final var start = Instant.now();
     try {
@@ -102,7 +105,7 @@ public abstract class SemanticAspectDefinition {
           joinPoint.getSignature().getName(),
           duration );
       return response;
-    } catch (Throwable e) {
+    } catch ( Throwable e ) {
       log.warn( "An error occurred during use case execution with message {}", e.getMessage() );
       throw new RuntimeException( e );
     }

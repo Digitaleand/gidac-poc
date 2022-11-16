@@ -35,7 +35,7 @@ public interface PdfGenerationRecipeFactory {
    *
    * @return {@code true} indicates that the recipe may be created, {@code false} indicates the recipe is not creatable.
    */
-  boolean canCreate ();
+  boolean canCreate();
 
   /**
    * Create a new instance of the {@link PdfGenerationRecipe}.
@@ -44,21 +44,23 @@ public interface PdfGenerationRecipeFactory {
    *
    * @throws RuntimeException raise if the recipe cannot be created.
    */
-  PdfGenerationRecipe create ();
+  PdfGenerationRecipe create();
 
   /**
    * Define the archive to use to create the recipe.
    *
    * @param archive the archive to use to craete the recipe.
+   *
    * @return the current instance of the factory
    */
-  PdfGenerationRecipeFactory archive(Archive archive);
+  PdfGenerationRecipeFactory archive( Archive archive );
 
   /**
    * Define the request id for which the process runs.
    *
    * @param requestId the request id of the process
+   *
    * @return the current instance of the factory.
    */
-  PdfGenerationRecipeFactory requestId(RequestId requestId);
+  PdfGenerationRecipeFactory requestId( RequestId requestId );
 }

@@ -57,7 +57,7 @@ public class PdfGenerationRestController {
   /**
    * Default constructor of the controller
    */
-  public PdfGenerationRestController (final GeneratePdfRequestHandler requestHandler) {
+  public PdfGenerationRestController( final GeneratePdfRequestHandler requestHandler ) {
     this.requestHandler = requestHandler;
     archiveFactory = new ArchiveFactory();
   }
@@ -66,8 +66,8 @@ public class PdfGenerationRestController {
    * Handle a file upload (archive in zip format for now) and return the binary generated.
    *
    * <p>Depending on the content of the zip, the system will return a raw binary (if only one pdf should be
-   * generated) or a zip file if more than one binary should be generated. The content type is adapted based
-   * on the content of the response.</p>
+   * generated) or a zip file if more than one binary should be generated. The content type is adapted based on the
+   * content of the response.</p>
    *
    * @param file the zip file to handle to generate the pdf content for.
    *
@@ -77,7 +77,7 @@ public class PdfGenerationRestController {
       consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE },
       produces = { MediaType.APPLICATION_PDF_VALUE, "application/zip" }
   )
-  public ResponseEntity<byte[]> generatePdf (
+  public ResponseEntity<byte[]> generatePdf(
       @RequestAttribute("x-request-id") final String requestId,
       @RequestPart("file") final MultipartFile file
   ) {
@@ -89,7 +89,7 @@ public class PdfGenerationRestController {
       headers.setContentType( MediaType.parseMediaType( response.binary().mimeType() ) );
       headers.setContentDispositionFormData( response.binary().name(), response.binary().name() );
       return new ResponseEntity<>( response.binary().payload(), headers, HttpStatus.OK );
-    } catch (final IOException e) {
+    } catch ( final IOException e ) {
       return ResponseEntity.badRequest().build();
     }
   }

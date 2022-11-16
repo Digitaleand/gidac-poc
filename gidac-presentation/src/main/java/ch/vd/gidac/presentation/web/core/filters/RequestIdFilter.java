@@ -59,15 +59,15 @@ public class RequestIdFilter extends OncePerRequestFilter {
    * @param idGenerator   the generator to use to generate request.
    * @param requestHeader the name of the header to fetch the correlation id into.
    */
-  public RequestIdFilter (final IdGenerator idGenerator, final String requestHeader) {
+  public RequestIdFilter( final IdGenerator idGenerator, final String requestHeader ) {
     this.idGenerator = idGenerator;
     this.requestHeader = requestHeader;
   }
 
   @Override
-  protected void doFilterInternal (final HttpServletRequest request,
+  protected void doFilterInternal( final HttpServletRequest request,
                                    final HttpServletResponse response,
-                                   final FilterChain filterChain)
+                                   final FilterChain filterChain )
       throws ServletException, IOException {
     log.trace( "Checking the presence of the request id header" );
     var requestId = request.getHeader( requestHeader );

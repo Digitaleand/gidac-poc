@@ -33,19 +33,19 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class ManifestTest {
   @Test
-  void createManifest () throws JAXBException {
+  void createManifest() throws JAXBException {
     final var jaxbContext = JAXBContext.newInstance( Manifest.class );
     final var unmarshaller = jaxbContext.createUnmarshaller();
-    try (final var is = getClass().getClassLoader().getResourceAsStream( "samples/manifest.xml" )) {
+    try ( final var is = getClass().getClassLoader().getResourceAsStream( "samples/manifest.xml" ) ) {
       assertNotNull( is, "The input stream must be defined" );
-      final var manifest = (Manifest) unmarshaller.unmarshal( is );
+      final var manifest = ( Manifest ) unmarshaller.unmarshal( is );
       assertNotNull( manifest, "The manifest must be defined" );
       assertEquals( "1.0", manifest.getVersion() );
       final var item = manifest.getItems().getItem().get( 0 );
       assertEquals( "1", item.getName() );
       assertEquals( "file.dita", item.getDitamap() );
       assertEquals( "file1.dita", item.getFiles().getFile().get( 0 ) );
-    } catch (final Exception e) {
+    } catch ( final Exception e ) {
       fail( e.getMessage() );
     }
 

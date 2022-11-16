@@ -29,17 +29,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultGeneratePdfRequestHandlerTest {
 
   @Test
-  void generatePdfSuccess () {
+  void generatePdfSuccess() {
     assertTrue( true );
   }
 
   @Test
-  void generatePdfInvalidBinary () {
+  void generatePdfInvalidBinary() {
     assertTrue( true );
   }
 
   @Test
-  void generatePdfInvalidRequsetId () {
+  void generatePdfInvalidRequsetId() {
     assertTrue( true );
   }
 }

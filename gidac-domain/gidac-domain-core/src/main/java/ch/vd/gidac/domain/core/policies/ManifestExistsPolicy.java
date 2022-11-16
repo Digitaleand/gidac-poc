@@ -37,7 +37,7 @@ public class ManifestExistsPolicy implements Predicate<Path> {
   private static final String MANIFEST_FILENAME = "manifest.xml";
 
   @Override
-  public boolean test (final Path path) {
+  public boolean test( final Path path ) {
     return Files.exists( path.resolve( MANIFEST_FILENAME ) );
   }
 }

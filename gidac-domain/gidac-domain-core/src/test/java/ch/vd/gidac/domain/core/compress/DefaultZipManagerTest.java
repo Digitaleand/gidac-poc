@@ -40,58 +40,58 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultZipManagerTest {
 
-    private static final String ARCHIVE = "archives/flowers.zip";
+  private static final String ARCHIVE = "archives/flowers.zip";
 
-    private Path root;
-    private Path workingDirectory;
+  private Path root;
+  private Path workingDirectory;
 
-    @BeforeEach
-    void prepareWorkingDirectory() {
-        root = Paths.get("/tmp/gidac", UUID.randomUUID().toString());
-        workingDirectory = root.resolve("output");
+  @BeforeEach
+  void prepareWorkingDirectory() {
+    root = Paths.get( "/tmp/gidac", UUID.randomUUID().toString() );
+    workingDirectory = root.resolve( "output" );
+  }
+
+  @AfterEach
+  void cleanupWorkingDirectory() throws IOException {
+    PathUtils.deleteDirectory( root );
+  }
+
+  @Test
+  void unzipSuccess() throws IOException, URISyntaxException {
+    // GIVEN
+    final var url = getClass().getClassLoader().getResource( ARCHIVE );
+    assertNotNull( url );
+    final var uri = url.toURI();
+    final var file = new File( uri );
+    assertNotNull( file );
+
+
+    final var dir = Files.createDirectories( root );
+    final var archive = Paths.get( uri );
+    assertNotNull( archive );
+
+    // WHEN
+    final var zipManager = new DefaultZipManager();
+    zipManager.unzip( archive.toFile(), dir );
+
+    // THEN
+    final var files = dir.toFile().listFiles();
+    assertNotEquals( 0, files.length );
+  }
+
+  @Test
+  void unzipByteArray() throws IOException {
+    final var zipManager = new DefaultZipManager();
+    // GIVEN
+    try ( final var inputStream = getClass().getClassLoader().getResourceAsStream( ARCHIVE ) ) {
+      assert inputStream != null;
+      final var content = inputStream.readAllBytes();
+      final var dir = Files.createDirectories( root );
+      zipManager.unzip( content, dir );
+
+      // THEN
+      final var files = dir.toFile().listFiles();
+      assertNotEquals( 0, files.length );
     }
-
-    @AfterEach
-    void cleanupWorkingDirectory() throws IOException {
-        PathUtils.deleteDirectory(root);
-    }
-
-    @Test
-    void unzipSuccess() throws IOException, URISyntaxException {
-        // GIVEN
-        final var url = getClass().getClassLoader().getResource(ARCHIVE);
-        assertNotNull(url);
-        final var uri = url.toURI();
-        final var file = new File(uri);
-        assertNotNull(file);
-
-
-        final var dir = Files.createDirectories(root);
-        final var archive = Paths.get(uri);
-        assertNotNull(archive);
-
-        // WHEN
-        final var zipManager = new DefaultZipManager();
-        zipManager.unzip(archive.toFile(), dir);
-
-        // THEN
-        final var files = dir.toFile().listFiles();
-        assertNotEquals(0, files.length);
-    }
-
-    @Test
-    void unzipByteArray() throws IOException {
-        final var zipManager = new DefaultZipManager();
-        // GIVEN
-        try(final var inputStream = getClass().getClassLoader().getResourceAsStream(ARCHIVE)) {
-            assert inputStream != null;
-            final var content = inputStream.readAllBytes();
-            final var dir = Files.createDirectories(root);
-            zipManager.unzip(content, dir);
-
-            // THEN
-            final var files = dir.toFile().listFiles();
-            assertNotEquals(0, files.length);
-        }
-    }
+  }
 }

@@ -33,5 +33,5 @@ import ch.vd.gidac.domain.core.Archive;
  * @version 0.0.1
  * @since 0.0.1
  */
-public record GeneratePdfRequest( String requestId, Archive archive ) {
+public record GeneratePdfRequest(String requestId, Archive archive) {
 }

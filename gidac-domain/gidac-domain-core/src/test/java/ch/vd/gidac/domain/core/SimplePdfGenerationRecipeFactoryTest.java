@@ -33,7 +33,7 @@ class SimplePdfGenerationRecipeFactoryTest {
   @Test
   void canCreateSuccess() {
     // GIVEN
-    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8);
+    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8 );
     final var archive = new Archive( "test", "test", b.length, b, "text/xml" );
     final var requestId = RequestId.generate();
 
@@ -44,13 +44,13 @@ class SimplePdfGenerationRecipeFactoryTest {
     final var canCreate = factory.canCreate();
 
     // THEN
-    assertTrue(canCreate);
+    assertTrue( canCreate );
   }
 
   @Test
   void cannotCreateArchiveConcern() {
     // GIVEN
-    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8);
+    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8 );
     final var requestId = RequestId.generate();
 
     // WHEN
@@ -59,13 +59,13 @@ class SimplePdfGenerationRecipeFactoryTest {
     final var canCreate = factory.canCreate();
 
     // THEN
-    assertFalse(canCreate);
+    assertFalse( canCreate );
   }
 
   @Test
   void cannotCreateRequestId() {
     // GIVEN
-    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8);
+    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8 );
     final var archive = new Archive( "test", "test", b.length, b, "text/xml" );
 
     // WHEN
@@ -74,13 +74,13 @@ class SimplePdfGenerationRecipeFactoryTest {
     final var canCreate = factory.canCreate();
 
     // THEN
-    assertFalse(canCreate);
+    assertFalse( canCreate );
   }
 
   @Test
   void create() {
     // GIVEN
-    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8);
+    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8 );
     final var archive = new Archive( "test", "test", b.length, b, "text/xml" );
     final var requestId = RequestId.generate();
 
@@ -98,7 +98,7 @@ class SimplePdfGenerationRecipeFactoryTest {
   @Test
   void cannotCreate() {
     // GIVEN
-    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8);
+    final var b = "<test></test>".getBytes( StandardCharsets.UTF_8 );
     final var archive = new Archive( "test", "test", b.length, b, "text/xml" );
 
     // WHEN

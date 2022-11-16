@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class RequestIdTest {
 
   @Test
-  void fromString () {
+  void fromString() {
     // GIVEN
     final var id = "30a87b39-10b9-49b9-bebb-677a57bf1fcd";
 
@@ -46,7 +46,7 @@ class RequestIdTest {
   }
 
   @Test
-  void generateString () {
+  void generateString() {
     // GIVEN
     final var id = "30a87b39-10b9-49b9-bebb-677a57bf1fcd";
 
@@ -58,7 +58,7 @@ class RequestIdTest {
   }
 
   @Test
-  void random () {
+  void random() {
     final var requestId = RequestId.generate();
     assertNotNull( requestId );
     assertDoesNotThrow( () -> {

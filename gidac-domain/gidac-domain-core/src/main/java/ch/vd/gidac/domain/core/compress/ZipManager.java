@@ -23,9 +23,9 @@
 package ch.vd.gidac.domain.core.compress;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Definition of an object which deals with archive.
@@ -41,7 +41,7 @@ public interface ZipManager {
    *
    * @throws RuntimeException thrown if an error occurred during the process.
    */
-  void zip (Path path) throws IOException;
+  File zip( Path path ) throws IOException;
 
   /**
    * Zip the content of a file.
@@ -50,7 +50,9 @@ public interface ZipManager {
    *
    * @throws RuntimeException thrown if an error occurred during the process.
    */
-  void zip (File file) throws IOException;
+  default File zip( File file ) throws IOException {
+    return zip( Paths.get( file.getAbsolutePath() ) );
+  }
 
   /**
    * Unzip a given content to a given path.
@@ -60,7 +62,7 @@ public interface ZipManager {
    *
    * @throws RuntimeException thrown if an error occurred during the process.
    */
-  void unzip (byte[] content, Path path) throws IOException;
+  void unzip( byte[] content, Path path ) throws IOException;
 
   /**
    * unzip the content of a file into a given path.
@@ -70,5 +72,5 @@ public interface ZipManager {
    *
    * @throws RuntimeException thrown if an error occurred during the process.
    */
-  void unzip (File file, Path path) throws IOException;
+  void unzip( File file, Path path ) throws IOException;
 }
