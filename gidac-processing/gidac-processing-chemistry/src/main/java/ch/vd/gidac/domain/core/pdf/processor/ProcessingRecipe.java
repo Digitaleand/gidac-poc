@@ -126,7 +126,7 @@ public record ProcessingRecipe(String executable, String tmpDir, String ditaMap,
       if ( valid ) {
         return new ProcessingRecipe( executable, tmpDir, ditaMap, outputDir, format, style, verbose );
       }
-      throw new IllegalStateException( "all arguments must be defined" );
+      throw new InvalidProcessingRecipe( "all arguments must be defined" );
     }
   }
 }
