@@ -23,6 +23,7 @@
 package ch.vd.gidac.domain.core.pdf.processor;
 
 import org.apache.commons.io.file.PathUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ class DefaultProcessorTest {
   // dita --input=input/gidac-flowers/flowers/flowers.ditamap --format=pdf --output=output/
 
   @Test
+  @Disabled("no dita-ot for now")
   void generatePdf() throws IOException {
     // GIVEN
     final var root = Paths.get( "/tmp/gidac" );

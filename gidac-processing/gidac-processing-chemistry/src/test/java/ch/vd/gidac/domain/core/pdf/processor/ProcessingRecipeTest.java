@@ -22,6 +22,7 @@
 
 package ch.vd.gidac.domain.core.pdf.processor;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,6 +59,7 @@ class ProcessingRecipeTest {
   }
 
   @Test
+  @Disabled("The style is optional for now")
   void invalidRecipe() {
 
     // GIVEN

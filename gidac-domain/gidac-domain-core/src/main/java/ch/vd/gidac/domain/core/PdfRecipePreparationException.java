@@ -20,50 +20,32 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.manifest;
-
-import java.util.List;
-import java.util.stream.Stream;
+package ch.vd.gidac.domain.core;
 
 /**
- * Decorator for the manifest. It allows to abstract the core implementation of the manifest.
+ * Indicates an error during the recipe preparation process.
  *
- * <p>This is an adapter on the {@link Manifest} and it will not evolve when the manifest is regenerated</p>
- *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public class ManifestDecorator {
-
-  public static final String MANIFEST_FILE_NAME = "manifest.xml";
-
-  private final Manifest manifest;
-
-  public ManifestDecorator( final Manifest manifest ) {
-    this.manifest = manifest;
+public class PdfRecipePreparationException extends RuntimeException {
+  public PdfRecipePreparationException () {
   }
 
-  public String getVersion() {
-    return manifest.version;
+  public PdfRecipePreparationException (String message) {
+    super( message );
   }
 
-  public List<Item> getItems() {
-    return manifest.getItems().getItem();
+  public PdfRecipePreparationException (String message, Throwable cause) {
+    super( message, cause );
   }
 
-  public Stream<Item> getItemsStream() {
-    return getItems().stream();
+  public PdfRecipePreparationException (Throwable cause) {
+    super( cause );
   }
 
-  public List<String> getFiles( final Item item ) {
-    return item.getFiles().file;
-  }
-
-  public Stream<String> getFilesStream( final Item item ) {
-    return item.getFiles().file.stream();
-  }
-
-  public Manifest getManifest() {
-    return manifest;
+  public PdfRecipePreparationException (String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super( message, cause, enableSuppression, writableStackTrace );
   }
 }

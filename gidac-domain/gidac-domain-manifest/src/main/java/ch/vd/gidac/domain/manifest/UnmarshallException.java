@@ -22,48 +22,33 @@
 
 package ch.vd.gidac.domain.manifest;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
- * Decorator for the manifest. It allows to abstract the core implementation of the manifest.
+ * Indicates an exception which occurs during the unmarshalling process.
  *
- * <p>This is an adapter on the {@link Manifest} and it will not evolve when the manifest is regenerated</p>
- *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public class ManifestDecorator {
-
-  public static final String MANIFEST_FILE_NAME = "manifest.xml";
-
-  private final Manifest manifest;
-
-  public ManifestDecorator( final Manifest manifest ) {
-    this.manifest = manifest;
+public class UnmarshallException extends RuntimeException {
+  public UnmarshallException () {
   }
 
-  public String getVersion() {
-    return manifest.version;
+  public UnmarshallException (final String message) {
+    super( message );
   }
 
-  public List<Item> getItems() {
-    return manifest.getItems().getItem();
+  public UnmarshallException (final String message, final Throwable cause) {
+    super( message, cause );
   }
 
-  public Stream<Item> getItemsStream() {
-    return getItems().stream();
+  public UnmarshallException (final Throwable cause) {
+    super( cause );
   }
 
-  public List<String> getFiles( final Item item ) {
-    return item.getFiles().file;
-  }
-
-  public Stream<String> getFilesStream( final Item item ) {
-    return item.getFiles().file.stream();
-  }
-
-  public Manifest getManifest() {
-    return manifest;
+  public UnmarshallException (final String message,
+                              final Throwable cause,
+                              final boolean enableSuppression,
+                              final boolean writableStackTrace) {
+    super( message, cause, enableSuppression, writableStackTrace );
   }
 }

@@ -24,7 +24,6 @@ package ch.vd.gidac.domain.manifest;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,18 +35,21 @@ import java.io.InputStream;
  */
 public class ManifestUnmarshaller {
 
-  private final Unmarshaller unmarshaller;
+  public ManifestUnmarshaller() {
 
-  public ManifestUnmarshaller() throws JAXBException {
-    final var jaxbContext = JAXBContext.newInstance( Manifest.class );
-    unmarshaller = jaxbContext.createUnmarshaller();
   }
 
-  public Manifest unmarshall( final InputStream inputStream, boolean autoClose ) throws JAXBException, IOException {
-    final var manifest = ( Manifest ) unmarshaller.unmarshal( inputStream );
-    if ( autoClose ) {
-      inputStream.close();
+  public Manifest unmarshall( final InputStream inputStream, boolean autoClose ) {
+    try {
+      final var jaxbContext = JAXBContext.newInstance( Manifest.class );
+      final var unmarshaller = jaxbContext.createUnmarshaller();
+      final var manifest = (Manifest) unmarshaller.unmarshal( inputStream );
+      if (autoClose) {
+        inputStream.close();
+      }
+      return manifest;
+    } catch( JAXBException | IOException exception) {
+      throw new UnmarshallException(exception);
     }
-    return manifest;
   }
 }

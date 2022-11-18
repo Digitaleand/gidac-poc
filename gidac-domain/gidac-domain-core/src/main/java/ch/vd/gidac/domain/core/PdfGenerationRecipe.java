@@ -28,14 +28,12 @@ import ch.vd.gidac.domain.core.pdf.PdfGenerator;
 import ch.vd.gidac.domain.core.specifications.IsProcessableArchiveSpecification;
 import ch.vd.gidac.domain.core.specifications.Specification;
 import ch.vd.gidac.domain.manifest.Item;
-import ch.vd.gidac.domain.manifest.Manifest;
 import ch.vd.gidac.domain.manifest.ManifestDecorator;
 import ch.vd.gidac.domain.manifest.ManifestUnmarshaller;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -65,11 +63,6 @@ public class PdfGenerationRecipe {
    * The result of the process.
    */
   private Binary binary;
-
-  /**
-   * Manifest for the recipe. It is initialized after reading the archive.
-   */
-  private Manifest manifest;
 
   /**
    * Reader for the manifest
@@ -185,26 +178,24 @@ public class PdfGenerationRecipe {
    * @throws RuntimeException if anything goes wrong during the process.
    */
   public PdfGenerationRecipe prepare() {
-    try {
-      final var unmarshaller = new ManifestUnmarshaller();
-      try ( final var inputStream =
-                new FileInputStream( workingDirectory.getManifestFile() ) ) {
+    final var unmarshaller = new ManifestUnmarshaller();
+    try ( final var inputStream =
+              new FileInputStream( workingDirectory.getManifestFile() ) ) {
 
-        manifest = unmarshaller.unmarshall( inputStream, false );
-        reader = new ManifestDecorator( manifest );
+      final var manifest = unmarshaller.unmarshall( inputStream, false );
+      reader = new ManifestDecorator( manifest );
 
-        final var ditStream = reader.getItems()
-            .stream()
-            .map( Item::getDitamap )
-            .map( Paths::get )
-            .map( DitaMap::fromPath );
+      final var ditaStream = reader.getItems()
+          .stream()
+          .map( Item::getDitamap )
+          .map( Paths::get )
+          .map( DitaMap::fromPath );
 
-        ditaMaps.addAll( ditStream.toList() );
-      }
-      return this;
-    } catch ( final JAXBException | IOException jaxbException ) {
-      throw new RuntimeException( jaxbException );
+      ditaMaps.addAll( ditaStream.toList() );
+    } catch ( IOException exception ) {
+      throw new PdfRecipePreparationException(exception);
     }
+    return this;
   }
 
   /**
