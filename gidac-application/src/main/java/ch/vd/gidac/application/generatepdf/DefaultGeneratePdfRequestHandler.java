@@ -58,6 +58,7 @@ public class DefaultGeneratePdfRequestHandler implements GeneratePdfRequestHandl
           .prepare()
           .bake( pdfGenerator )
           .pack()
+          .tearDown()
           .getBinary();
       return new GeneratePdfResponse( request, binary, null );
     } catch ( final Exception e ) {

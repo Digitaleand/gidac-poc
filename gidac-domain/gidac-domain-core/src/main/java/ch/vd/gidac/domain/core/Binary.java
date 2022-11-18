@@ -22,6 +22,9 @@
 
 package ch.vd.gidac.domain.core;
 
+import ch.vd.gidac.domain.core.specifications.BinaryCreationSpecification;
+import org.apache.commons.lang3.tuple.Triple;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -31,29 +34,29 @@ import java.util.Objects;
  * @version 0.0.1
  * @since 0.0.1
  */
-public record Binary(String mimeType, String name, byte[] payload) {
+public record Binary( String mimeType, String name, byte[] payload ) {
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) {
+  public boolean equals (Object o) {
+    if (this == o) {
       return true;
     }
-    if ( o == null || getClass() != o.getClass() ) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    final Binary binary = ( Binary ) o;
+    final Binary binary = (Binary) o;
     return mimeType.equals( binary.mimeType ) && name.equals( binary.name ) && Arrays.equals( payload, binary.payload );
   }
 
   @Override
-  public int hashCode() {
+  public int hashCode () {
     int result = Objects.hash( mimeType, name );
     result = 31 * result + Arrays.hashCode( payload );
     return result;
   }
 
   @Override
-  public String toString() {
+  public String toString () {
     return "Binary{" +
         "mimeType='" + mimeType + '\'' +
         ", name='" + name + '\'' +
@@ -61,7 +64,11 @@ public record Binary(String mimeType, String name, byte[] payload) {
         '}';
   }
 
-  public static Binary create( final String mimeType, final String name, final byte[] payload) {
-    return new Binary( mimeType, name, payload );
+  public static Binary create (final String mimeType, final String name, final byte[] payload) {
+    final var specification = new BinaryCreationSpecification();
+    if (specification.isSatisfiedBy( Triple.of( mimeType, name, payload ) )) {
+      return new Binary( mimeType, name, payload );
+    }
+    throw new IllegalArgumentException( "Provided argument are not valid regarding binary creation rules" );
   }
 }

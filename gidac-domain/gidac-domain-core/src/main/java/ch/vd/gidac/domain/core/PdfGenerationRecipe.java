@@ -157,6 +157,7 @@ public class PdfGenerationRecipe {
   public PdfGenerationRecipe setUp() {
     try {
       workingDirectory = WorkingDirectory.create( requestId );
+      workingDirectory.lock();
       return this;
     } catch ( final IOException ioException ) {
       throw new RuntimeException( ioException );
@@ -171,6 +172,7 @@ public class PdfGenerationRecipe {
    * @throws RuntimeException if something goes wrong during the process.
    */
   public PdfGenerationRecipe extract() throws IOException {
+    workingDirectory.markDirty();
     zipManager.unzip( archive.bytes(), workingDirectory.inputDirectory() );
     return this;
   }
@@ -215,8 +217,14 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if anything goes wrong during the process.
    */
-  public PdfGenerationRecipe bake( final PdfGenerator pdfGenerator ) {
+  public PdfGenerationRecipe bake( final PdfGenerator pdfGenerator ) throws IOException {
     ditaMaps.forEach( ditaMap -> pdfGenerator.generatePdf( workingDirectory, ditaMap ) );
+    return this;
+  }
+
+  public PdfGenerationRecipe tearDown() throws IOException {
+    workingDirectory.markClean();
+    workingDirectory.unlock();;
     return this;
   }
 
