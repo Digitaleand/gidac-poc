@@ -1,5 +1,5 @@
 name: Build application
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: Building and testing application
 on: [push]
 jobs:
   build:
@@ -19,3 +19,8 @@ jobs:
       - name: Save Package
         run: |
           mkdir staging && find . -type f -name *SNAPSHOT.jar -exec cp "{}" /tmp/. \;
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Package
+          path: staging
