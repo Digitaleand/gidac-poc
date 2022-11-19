@@ -22,10 +22,10 @@
 
 package ch.vd.gidac.domain.core.pdf.processor;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProcessingRecipeTest {
 
@@ -36,7 +36,7 @@ class ProcessingRecipeTest {
     final var tmpDir = "tmpDir";
     final var ditaMap = "ditaMap";
     final var outputDir = "outputDir";
-    final var format = "format";
+    final var format = "pdf";
     final var style = "style";
 
     // WHEN
@@ -59,19 +59,69 @@ class ProcessingRecipeTest {
   }
 
   @Test
-  @Disabled("The style is optional for now")
-  void invalidRecipe() {
-
+  void acceptEmptyStyle() {
     // GIVEN
     final var executable = "executable";
     final var tmpDir = "tmpDir";
     final var ditaMap = "ditaMap";
     final var outputDir = "outputDir";
-    final var format = "format";
+    final var format = "pdf";
+    final var style = "";
+
+    // WHEN
+    final var recipe = ProcessingRecipe.builder()
+        .executable( executable )
+        .tmpDir( tmpDir )
+        .ditaMap( ditaMap )
+        .outputDir( outputDir )
+        .format( format )
+        .style( style )
+        .build();
+
+    // THEN
+    assertEquals( executable, recipe.executable() );
+    assertEquals( tmpDir, recipe.tmpDir() );
+    assertEquals( ditaMap, recipe.ditaMap() );
+    assertEquals( outputDir, recipe.outputDir() );
+    assertEquals( format, recipe.format() );
+    assertEquals( style, recipe.style() );
+  }
+
+  @Test
+  void invalidRecipe() {
+    // GIVEN
+    final var executable = "executable";
+    final var tmpDir = "tmpDir";
+    final var ditaMap = "ditaMap";
+    final var outputDir = "";
+    final var format = "pdf";
     final var style = "";
 
     // WHEN / THEN
-    assertThrows( IllegalStateException.class, () -> {
+    assertThrows( InvalidProcessingRecipe.class, () -> {
+      ProcessingRecipe.builder()
+          .executable( executable )
+          .tmpDir( tmpDir )
+          .ditaMap( ditaMap )
+          .outputDir( outputDir )
+          .format( format )
+          .style( style )
+          .build();
+    } );
+  }
+
+  @Test
+  void invalidFormat() {
+    // GIVEN
+    final var executable = "executable";
+    final var tmpDir = "tmpDir";
+    final var ditaMap = "ditaMap";
+    final var outputDir = "outputDir";
+    final var format = "invalid";
+    final var style = "test";
+
+    // WHEN / THEN
+    assertThrows( UnsupportedFormatException.class, () -> {
       ProcessingRecipe.builder()
           .executable( executable )
           .tmpDir( tmpDir )
