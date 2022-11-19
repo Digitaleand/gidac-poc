@@ -24,9 +24,14 @@ package ch.vd.gidac.presentation.web;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 
 @SpringBootTest
 class Dita2PdfApplicationTest {
+
+  @TestConfiguration
+  static class Configuration {}
+
   @Test
   void contextLoads() {
   }
