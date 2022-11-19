@@ -31,6 +31,7 @@ import java.io.IOException;
  * Factory to use to transform {@link org.springframework.web.multipart.MultipartFile} to
  * {@link ch.vd.gidac.domain.core.Archive}.
  *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
