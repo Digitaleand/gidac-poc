@@ -1,0 +1,21 @@
+name: Build application
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Environment
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build
+        run: ./mvnw --batch-mode --update-snapshots package
+
+      - name: Save Package
+        run: |
+          mkdir staging && find . -type f -name *SNAPSHOT.jar -exec cp "{}" /tmp/. \;
