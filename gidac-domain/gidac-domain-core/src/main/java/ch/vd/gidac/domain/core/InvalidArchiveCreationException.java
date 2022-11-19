@@ -22,18 +22,27 @@
 
 package ch.vd.gidac.domain.core;
 
-import org.junit.jupiter.api.Test;
+/**
+ * Defines an exception which is used to indicate the request for archive creation is not compliant with business
+ * rules.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class InvalidArchiveCreationException extends IllegalStateException {
+  public InvalidArchiveCreationException () {
+  }
 
-class PdfGenerationRecipeTest {
+  public InvalidArchiveCreationException (final String message) {
+    super( message );
+  }
 
-  @Test
-  void binaryAccessRejection() {
-    // GIVEN
-    final var requestId = RequestId.generate();
-    final var archive = "te";
+  public InvalidArchiveCreationException (String message, Throwable cause) {
+    super( message, cause );
+  }
 
-    // WHEN
-
-    // THEN
+  public InvalidArchiveCreationException (Throwable cause) {
+    super( cause );
   }
 }

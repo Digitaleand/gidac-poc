@@ -72,7 +72,7 @@ public class PdfGenerationRecipe {
   /**
    * List of dita maps processed during the transformation.
    */
-  private List<DitaMap> ditaMaps = new ArrayList<>();
+  private final List<DitaMap> ditaMaps = new ArrayList<>();
 
   /**
    * Reference to the working directory for the processing.
@@ -125,7 +125,7 @@ public class PdfGenerationRecipe {
    */
   public Binary getBinary() {
     if ( null == binary ) {
-      throw new IllegalStateException( "The recipe has not been baked" );
+      throw new NoBinaryGeneratedException( "The recipe has not been baked" );
     }
     return binary;
   }

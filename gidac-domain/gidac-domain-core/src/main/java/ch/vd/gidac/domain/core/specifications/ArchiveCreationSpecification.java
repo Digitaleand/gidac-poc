@@ -20,27 +20,31 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core;
+package ch.vd.gidac.domain.core.specifications;
 
-import ch.vd.gidac.domain.core.specifications.ArchiveCreationSpecification;
+import ch.vd.gidac.domain.core.Archive;
+import ch.vd.gidac.domain.core.policies.BinaryPayloadPolicy;
+import ch.vd.gidac.domain.core.policies.NotEmptyStringPolicy;
 import org.javatuples.Quintet;
 
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
 /**
- * Represent an archive to handle to generate the pdf.
+ * Specification for archive creation.
  *
- * @param name         the name of the file.
- * @param originalName the original name of the file.
- * @param size         the size of the archive.
- * @param bytes        the content of the archive.
- * @param contentType  the MIME type of the archive.
+ * <p>This specification ensure that the archive can be created according to provided parameters.</p>
  *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public record Archive( String name, String originalName, long size, byte[] bytes, String contentType ) {
+public class ArchiveCreationSpecification implements Predicate<Quintet<String, String, Long, byte[], String>> {
 
   /**
    * Create specifications to pass to the specification from arguments valid on the archive creation content.
+   *
+   * <p>This is a alias of {@link Archive#getSpecificationArguments(String, String, Long, byte[], String)}</p>
    *
    * @param name  the name of the archive
    * @param originalName the original name of the archive
@@ -54,42 +58,32 @@ public record Archive( String name, String originalName, long size, byte[] bytes
                                                                                          final Long size,
                                                                                          final byte[] content,
                                                                                          final String mime) {
-    return Quintet.with( name, originalName, size, content, mime );
+    return Archive.getSpecificationArguments( name, originalName, size, content, mime );
   }
 
-  /**
-   * Create a new instance of an archive which is valid according to business rules.
-   *
-   * @param name         the name of the archive to create
-   * @param originalName the original name of the archive
-   * @param size         the size of the archive
-   * @param content      the content of the archive
-   * @param mimeType     the mime type of the archive
-   *
-   * @return a new instance of an archive.
-   */
-  public static Archive create (final String name, String originalName, final long size, final byte[] content,
-                                final String mimeType) {
-    final var spec = new ArchiveCreationSpecification();
-    if (spec.test( getSpecificationArguments( name, originalName, size, content, mimeType ) )) {
-      return new Archive( name, originalName, size, content, mimeType );
-    }
-    throw new InvalidArchiveCreationException("The archive cannot be created since it is not compliant with business rules");
-  }
+  private final NotEmptyStringPolicy policy = new NotEmptyStringPolicy();
+
+  private final BinaryPayloadPolicy binaryPolicy = new BinaryPayloadPolicy();
+
+  private final BiPredicate<Long, byte[]> sizePolicy = (size, content) -> size == content.length;
 
   /**
-   * Create a new instance of an archive which is valid according to business rules.
+   * Test if the argyments match expectations to create the archive.
    *
-   * <p>If the original name is not present, the provided name will be used. The {@code size} of the archive is
-   * calculated using the content provided.</p>
+   * <p>The form of the quintent is the following one.<br/><bloquote><pre>
+   *   quintet: name, originalName, size, content, mimeType
+   * </pre></bloquote></p>
    *
-   * @param name     the name of the archive to create
-   * @param content  the content of the archive
-   * @param mimeType the mime type of the archive
+   * @param item the input argument
    *
-   * @return a  new instance of an archive.
+   * @return {@code true} if the archive can be created, {@code false} otherwise.
    */
-  public static Archive create (final String name, final byte[] content, final String mimeType) {
-    return create( name, name, content.length, content, mimeType );
+  @Override
+  public boolean test (Quintet<String, String, Long, byte[], String> item) {
+    return policy.test( item.getValue0() ) &&
+        policy.test( item.getValue1() ) &&
+        binaryPolicy.test( item.getValue3() ) &&
+        sizePolicy.test( item.getValue2(), item.getValue3() ) &&
+        policy.test( item.getValue4() );
   }
 }

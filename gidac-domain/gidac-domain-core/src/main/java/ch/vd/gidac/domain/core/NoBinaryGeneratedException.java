@@ -22,18 +22,26 @@
 
 package ch.vd.gidac.domain.core;
 
-import org.junit.jupiter.api.Test;
+/**
+ * Exception thrown when a try to access to a not generated binary.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class NoBinaryGeneratedException extends IllegalStateException {
+  public NoBinaryGeneratedException () {
+  }
 
-class PdfGenerationRecipeTest {
+  public NoBinaryGeneratedException (final String message) {
+    super( message );
+  }
 
-  @Test
-  void binaryAccessRejection() {
-    // GIVEN
-    final var requestId = RequestId.generate();
-    final var archive = "te";
+  public NoBinaryGeneratedException (final String message, final Throwable cause) {
+    super( message, cause );
+  }
 
-    // WHEN
-
-    // THEN
+  public NoBinaryGeneratedException (final Throwable cause) {
+    super( cause );
   }
 }
