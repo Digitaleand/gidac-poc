@@ -44,16 +44,17 @@ public class ArchiveCreationSpecification implements Predicate<Quintet<String, S
   /**
    * Create specifications to pass to the specification from arguments valid on the archive creation content.
    *
-   * <p>This is a alias of {@link Archive#getSpecificationArguments(String, String, Long, byte[], String)}</p>
+   * <p>This is an alias of {@link Archive#getSpecificationArguments(String, String, Long, byte[], String)}</p>
    *
-   * @param name  the name of the archive
+   * @param name         the name of the archive
    * @param originalName the original name of the archive
-   * @param size the size of the archive
-   * @param content the content of the archive
-   * @param mime the mime type of the archvie
+   * @param size         the size of the archive
+   * @param content      the content of the archive
+   * @param mime         the mime type of the archvie
+   *
    * @return arguments to use with the specification.
    */
-  public static Quintet<String, String, Long, byte[], String> getSpecificationArguments(final String name,
+  public static Quintet<String, String, Long, byte[], String> getSpecificationArguments (final String name,
                                                                                          final String originalName,
                                                                                          final Long size,
                                                                                          final byte[] content,

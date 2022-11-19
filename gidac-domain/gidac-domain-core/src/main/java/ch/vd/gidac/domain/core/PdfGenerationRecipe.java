@@ -44,6 +44,7 @@ import java.util.List;
 /**
  * Aggregate and root entity which defines the processing of an archive to generate a pdf.
  *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
@@ -97,7 +98,7 @@ public class PdfGenerationRecipe {
    * @param requestId the unique id of the process for which we are generating the binary.
    * @param archive   the archive to use to read info to generate the binary.
    */
-  PdfGenerationRecipe( final RequestId requestId, final Archive archive ) {
+  PdfGenerationRecipe (final RequestId requestId, final Archive archive) {
     this.requestId = requestId;
     this.archive = archive;
     zipManager = new DefaultZipManager();
@@ -109,7 +110,7 @@ public class PdfGenerationRecipe {
    *
    * @return the request id
    */
-  public RequestId getRequestId() {
+  public RequestId getRequestId () {
     return requestId;
   }
 
@@ -123,8 +124,8 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if the binary has not been generated at the moment of the call.
    */
-  public Binary getBinary() {
-    if ( null == binary ) {
+  public Binary getBinary () {
+    if (null == binary) {
       throw new NoBinaryGeneratedException( "The recipe has not been baked" );
     }
     return binary;
@@ -135,7 +136,7 @@ public class PdfGenerationRecipe {
    *
    * @return the archive
    */
-  public Archive getArchive() {
+  public Archive getArchive () {
     return archive;
   }
 
@@ -147,12 +148,12 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if anything goes wrong during the process.
    */
-  public PdfGenerationRecipe setUp() {
+  public PdfGenerationRecipe setUp () {
     try {
       workingDirectory = WorkingDirectory.create( requestId );
       workingDirectory.lock();
       return this;
-    } catch ( final IOException ioException ) {
+    } catch (final IOException ioException) {
       throw new RuntimeException( ioException );
     }
   }
@@ -164,7 +165,7 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if something goes wrong during the process.
    */
-  public PdfGenerationRecipe extract() throws IOException {
+  public PdfGenerationRecipe extract () throws IOException {
     workingDirectory.markDirty();
     zipManager.unzip( archive.bytes(), workingDirectory.inputDirectory() );
     return this;
@@ -177,10 +178,10 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException if anything goes wrong during the process.
    */
-  public PdfGenerationRecipe prepare() {
+  public PdfGenerationRecipe prepare () {
     final var unmarshaller = new ManifestUnmarshaller();
-    try ( final var inputStream =
-              new FileInputStream( workingDirectory.getManifestFile() ) ) {
+    try (final var inputStream =
+             new FileInputStream( workingDirectory.getManifestFile() )) {
 
       final var manifest = unmarshaller.unmarshall( inputStream, false );
       reader = new ManifestDecorator( manifest );
@@ -192,8 +193,8 @@ public class PdfGenerationRecipe {
           .map( DitaMap::fromPath );
 
       ditaMaps.addAll( ditaStream.toList() );
-    } catch ( IOException exception ) {
-      throw new PdfRecipePreparationException(exception);
+    } catch (IOException exception) {
+      throw new PdfRecipePreparationException( exception );
     }
     return this;
   }
@@ -206,33 +207,33 @@ public class PdfGenerationRecipe {
    *
    * @return the current instance of the recipe
    *
-   * @throws RuntimeException if anything goes wrong during the process.
    */
-  public PdfGenerationRecipe bake( final PdfGenerator pdfGenerator ) throws IOException {
+  public PdfGenerationRecipe bake (final PdfGenerator pdfGenerator) {
     ditaMaps.forEach( ditaMap -> pdfGenerator.generatePdf( workingDirectory, ditaMap ) );
     return this;
   }
 
-  public PdfGenerationRecipe tearDown() throws IOException {
+  public PdfGenerationRecipe tearDown () throws IOException {
     workingDirectory.markClean();
-    workingDirectory.unlock();;
+    workingDirectory.unlock();
+    ;
     return this;
   }
 
-  private void createBinaryFromPath( final Path pdf ) throws IOException {
+  private void createBinaryFromPath (final Path pdf) throws IOException {
     final var name = FilenameUtils.getName( pdf.toString() );
     final var mime = "application/pdf"; // this should be adapted from the format
-    try ( final var fis = new FileInputStream( pdf.toFile() ) ) {
+    try (final var fis = new FileInputStream( pdf.toFile() )) {
       final var content = fis.readAllBytes();
       binary = Binary.create( mime, name, content );
     }
   }
 
-  private void createBinaryFromOutput() throws IOException {
+  private void createBinaryFromOutput () throws IOException {
     final var zip = zipManager.zip( workingDirectory.outputDirectory() );
     final var name = zip.getName();
     final var mime = "application/pdf";
-    try ( final var fis = new FileInputStream( zip ) ) {
+    try (final var fis = new FileInputStream( zip )) {
       final var content = fis.readAllBytes();
       binary = Binary.create( mime, name, content );
     }
@@ -245,9 +246,9 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException thrown if something goes wrong during the process.
    */
-  public PdfGenerationRecipe pack() throws IOException {
+  public PdfGenerationRecipe pack () throws IOException {
     final var outputFiles = workingDirectory.listOutputFiles();
-    if ( outputFiles.size() == 1 ) {
+    if (outputFiles.size() == 1) {
       createBinaryFromPath( outputFiles.get( 0 ) );
     } else {
       createBinaryFromOutput();
@@ -263,7 +264,7 @@ public class PdfGenerationRecipe {
    *
    * @return {@code true} if the recipe can be baked or {@code false} otherwise.
    */
-  public boolean canProcess() {
+  public boolean canProcess () {
     return processableSpecification.isSatisfiedBy( workingDirectory.inputDirectory() );
   }
 
@@ -274,22 +275,22 @@ public class PdfGenerationRecipe {
    *
    * @throws RuntimeException may occur if something goes wrong during the process.
    */
-  public PdfGenerationRecipe cleanUp() throws IOException {
+  public PdfGenerationRecipe cleanUp () throws IOException {
     workingDirectory.cleanup();
     return this;
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) {
+  public boolean equals (Object o) {
+    if (this == o) {
       return true;
     }
 
-    if ( o == null || getClass() != o.getClass() ) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
 
-    final var recipe = ( PdfGenerationRecipe ) o;
+    final var recipe = (PdfGenerationRecipe) o;
 
     return new EqualsBuilder()
         .append( requestId, recipe.requestId )
@@ -299,7 +300,7 @@ public class PdfGenerationRecipe {
   }
 
   @Override
-  public int hashCode() {
+  public int hashCode () {
     return new HashCodeBuilder( 17, 37 )
         .append( requestId )
         .append( archive )
@@ -308,7 +309,7 @@ public class PdfGenerationRecipe {
   }
 
   @Override
-  public String toString() {
+  public String toString () {
     return "PdfGenerationRecipe{" +
         "requestId=" + requestId.value().toString() +
         ", archive=" + archive.originalName() +

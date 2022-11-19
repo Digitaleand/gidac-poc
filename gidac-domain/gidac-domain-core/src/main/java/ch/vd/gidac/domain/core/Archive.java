@@ -34,6 +34,7 @@ import org.javatuples.Quintet;
  * @param bytes        the content of the archive.
  * @param contentType  the MIME type of the archive.
  *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
@@ -42,14 +43,15 @@ public record Archive( String name, String originalName, long size, byte[] bytes
   /**
    * Create specifications to pass to the specification from arguments valid on the archive creation content.
    *
-   * @param name  the name of the archive
+   * @param name         the name of the archive
    * @param originalName the original name of the archive
-   * @param size the size of the archive
-   * @param content the content of the archive
-   * @param mime the mime type of the archvie
+   * @param size         the size of the archive
+   * @param content      the content of the archive
+   * @param mime         the mime type of the archvie
+   *
    * @return arguments to use with the specification.
    */
-  public static Quintet<String, String, Long, byte[], String> getSpecificationArguments(final String name,
+  public static Quintet<String, String, Long, byte[], String> getSpecificationArguments (final String name,
                                                                                          final String originalName,
                                                                                          final Long size,
                                                                                          final byte[] content,
@@ -67,6 +69,8 @@ public record Archive( String name, String originalName, long size, byte[] bytes
    * @param mimeType     the mime type of the archive
    *
    * @return a new instance of an archive.
+   *
+   * @throws InvalidArchiveCreationException thrown if the archive cannot be created with provided parameters.
    */
   public static Archive create (final String name, String originalName, final long size, final byte[] content,
                                 final String mimeType) {
@@ -74,7 +78,7 @@ public record Archive( String name, String originalName, long size, byte[] bytes
     if (spec.test( getSpecificationArguments( name, originalName, size, content, mimeType ) )) {
       return new Archive( name, originalName, size, content, mimeType );
     }
-    throw new InvalidArchiveCreationException("The archive cannot be created since it is not compliant with business rules");
+    throw new InvalidArchiveCreationException( "The archive cannot be created since it is not compliant with business rules" );
   }
 
   /**
@@ -88,6 +92,8 @@ public record Archive( String name, String originalName, long size, byte[] bytes
    * @param mimeType the mime type of the archive
    *
    * @return a  new instance of an archive.
+   *
+   * @throws InvalidArchiveCreationException thrown if the archive cannot be created with provided parameters.
    */
   public static Archive create (final String name, final byte[] content, final String mimeType) {
     return create( name, name, content.length, content, mimeType );
