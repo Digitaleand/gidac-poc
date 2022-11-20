@@ -29,6 +29,6 @@ import java.util.function.Predicate;
 public class NotEmptyStringPolicy implements Predicate<String> {
   @Override
   public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s );
+    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
   }
 }

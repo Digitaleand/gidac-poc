@@ -23,6 +23,8 @@
 package ch.vd.gidac.domain.core.policies;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,13 +37,14 @@ class NotEmptyStringPolicyTest {
     assertTrue( policy.test( "test" ) );
   }
 
-  @Test
-  void checkEmpty() {
-    assertFalse( policy.test( "" ) );
+  @ParameterizedTest
+  @ValueSource(strings = { "", " ", "   " })
+  void checkEmpty (final String value) {
+    assertFalse( policy.test( value ) );
   }
 
   @Test
-  void checkNull() {
+  void checkNull () {
     assertFalse( policy.test( null ) );
   }
 }
