@@ -31,6 +31,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+/**
+ * Bootstrap the application.
+ *
+ * @author Mehdi Lefbevre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -65,7 +72,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
       final var response = appInitRequestHandler.handleRequest( request );
       log.info( "The application has been initialised in {}", response.appWorkingDirectory() );
-    } catch(final Exception e) {
+    } catch (final Exception e) {
       log.error( "An error occurred during the application initialisation process with message {}", e.getMessage() );
       throw e;
     }
