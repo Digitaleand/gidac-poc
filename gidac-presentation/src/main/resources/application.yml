@@ -13,7 +13,7 @@ application:
       enabled: dita
       fs-tree:
         native-tmp: true
-        tmp-dir: ''
+        tmp-dir: '/tmp'
       dita:
         embedded-toolkit: true
         toolkit-path: ''
