@@ -35,6 +35,7 @@
 
     <properties>
         <repackage.classifier/>
+        <application.name>GidacPoc</application.name>
     </properties>
 
 

@@ -27,13 +27,33 @@ import ch.vd.gidac.domain.core.policies.ExistingPathPolicy;
 import java.nio.file.Path;
 import java.util.Objects;
 
+/**
+ * Response for the application initialization process.
+ *
+ * @param request             the request sent by the client to the use case
+ * @param appWorkingDirectory the application working directory created during the initialization process.
+ */
 public record AppInitResponse( AppInitRequest request, Path appWorkingDirectory ) {
 
+  /**
+   * Create a new instance of the response.
+   *
+   * <p>Since the response is always generated from the application right after processing with the domain, the
+   * {@code appWorkingDirectory} should always be valid. However, here, we have a check just to ensure domain consistency
+   * accross boundaries.</p>
+   *
+   * @param request             the request to use to create the response
+   * @param appWorkingDirectory the instance of the application working directory.
+   *
+   * @return an instance of the application response.
+   */
   public static AppInitResponse create (final AppInitRequest request, Path appWorkingDirectory) {
+    // the control of the path consistency is not necessary here. We keep it for consistency reason but this should
+    /// be review during the development of the production ready application.
     final var policy = new ExistingPathPolicy();
     if (Objects.nonNull( request ) && policy.test( appWorkingDirectory )) {
       return new AppInitResponse( request, appWorkingDirectory );
     }
-    throw new IllegalArgumentException( "Request or path invalidd, the appInitResponse cannot be created" );
+    throw new IllegalArgumentException( "Request or path invalid, the appInitResponse cannot be created" );
   }
 }

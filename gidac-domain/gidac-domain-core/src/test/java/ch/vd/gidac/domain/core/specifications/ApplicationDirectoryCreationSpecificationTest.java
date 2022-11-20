@@ -20,52 +20,29 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.application.appinit;
+package ch.vd.gidac.domain.core.specifications;
 
 import org.apache.commons.io.FileUtils;
+import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class AppInitResponseTest {
+class ApplicationDirectoryCreationSpecificationTest {
 
   @Test
-  void appResponseCreationSuccess () {
+  void validApplicationDirectory() {
     // GIVEN
-    final var name = "test";
-    final var dir = Path.of( FileUtils.getTempDirectoryPath() );
-    final var request = AppInitRequest.create( name, "/tmp", true );
+    final var name = "giroflon";
+    final var path = Path.of( FileUtils.getTempDirectoryPath() );
 
     // WHEN
-    final var response = AppInitResponse.create( request, dir );
+    final var spec = new ApplicationDirectoryCreationSpecification();
+    final var result = spec.isSatisfiedBy( Pair.with( name, path ) );
 
     // THEN
-    assertNotNull( response );
-    assertNotNull( response.request() );
-    assertEquals( name, response.request().appName() );
-    assertEquals( dir, response.appWorkingDirectory() );
-  }
-
-
-  @Test
-  void appResponseCreationFailureWithInvalidRequest () {
-    // GIVEN
-    final var dir = Path.of( FileUtils.getTempDirectoryPath() );
-
-    // WHEN
-    assertThrows( IllegalArgumentException.class, () -> AppInitResponse.create( null, dir ) );
-  }
-
-  @Test
-  void appResponseCreationFailureWithInvalidDir () {
-    // GIVEN
-    final var request = AppInitRequest.create( "test", "/tmp", true );
-
-    // WHEN
-    assertThrows( IllegalArgumentException.class, () -> AppInitResponse.create( request, null ) );
+    assertTrue(result);
   }
 }

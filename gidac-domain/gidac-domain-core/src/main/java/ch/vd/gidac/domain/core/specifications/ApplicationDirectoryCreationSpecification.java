@@ -20,32 +20,32 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.application.appinit;
+package ch.vd.gidac.domain.core.specifications;
 
+import ch.vd.gidac.domain.core.policies.ExistingPathPolicy;
 import ch.vd.gidac.domain.core.policies.NotEmptyStringPolicy;
+import org.javatuples.Pair;
+
+import java.nio.file.Path;
 
 /**
- * Defines the request to initialise the application.
+ * Specification to create the application directory.
  *
- * @param appName the name of the application to initialize.
+ * <p>The configuration of the application indicates the path to the location where the application working directory
+ * will be created. The name of the application is also the name of the working directory.</p>
  *
  * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public record AppInitRequest( String appName, String baseDirectory, boolean useNative ) {
-  private static final NotEmptyStringPolicy policy = new NotEmptyStringPolicy();
+public class ApplicationDirectoryCreationSpecification implements Specification<Pair<String, Path>> {
 
-  /**
-   * Create a new application request to generate the working directory for the application.
-   *
-   * @param name the name of the application.
-   * @return an instance of a request.
-   */
-  public static AppInitRequest create (final String name, final String baseDirectory, final boolean useNative) {
-    if (policy.test( name ) && policy.test( baseDirectory )) {
-      return new AppInitRequest( name, baseDirectory, useNative );
-    }
-    throw new IllegalArgumentException( "The name of the application to initialize is mandatory and must be a non empty alpha numeric string" );
+  private final NotEmptyStringPolicy notEmptyStringPolicy = new NotEmptyStringPolicy();
+  private final ExistingPathPolicy existingPathPolicy = new ExistingPathPolicy();
+
+  @Override
+  public boolean isSatisfiedBy (Pair<String, Path> payload) {
+    return notEmptyStringPolicy.test( payload.getValue0() ) &&
+        existingPathPolicy.test( payload.getValue1() );
   }
 }

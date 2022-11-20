@@ -22,6 +22,7 @@
 
 package ch.vd.gidac.application.appinit;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -34,7 +35,7 @@ class AppInitRequestTest {
   @ParameterizedTest
   @ValueSource(strings = { "test", "012test24", "TheAppl1cat10n" })
   void createApplicationRequest (final String name) {
-    final var request = AppInitRequest.create( name );
+    final var request = AppInitRequest.create( name, "/tmp", true );
     assertNotNull( request );
     assertEquals( name, request.appName() );
   }
@@ -43,7 +44,22 @@ class AppInitRequestTest {
   @ValueSource(strings = { "", " ", "    " })
   void unableToCreateAppRequest (final String name) {
     assertThrows( IllegalArgumentException.class, () -> {
-      AppInitRequest.create( name );
+      AppInitRequest.create( name, "tmp", true );
+    } );
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = { "", " ", "    " })
+  void unableToCreateAppRequestWithInvalidBaseDir(final String baseDir) {
+    assertThrows( IllegalArgumentException.class, () -> {
+      AppInitRequest.create( "test", baseDir, true );
+    } );
+  }
+
+  @Test
+  void invalidNullName() {
+    assertThrows( IllegalArgumentException.class, () -> {
+      AppInitRequest.create( null, "/tmp", true );
     } );
   }
 }

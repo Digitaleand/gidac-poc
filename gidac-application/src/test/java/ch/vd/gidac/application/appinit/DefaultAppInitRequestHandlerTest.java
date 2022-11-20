@@ -22,50 +22,32 @@
 
 package ch.vd.gidac.application.appinit;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class AppInitResponseTest {
+class DefaultAppInitRequestHandlerTest {
 
   @Test
-  void appResponseCreationSuccess () {
+  void initializationSuccess() throws IOException {
     // GIVEN
-    final var name = "test";
-    final var dir = Path.of( FileUtils.getTempDirectoryPath() );
-    final var request = AppInitRequest.create( name, "/tmp", true );
+    final var appName = UUID  .randomUUID().toString();
+    final var request = AppInitRequest.create( appName, "/tmp", true );
 
     // WHEN
-    final var response = AppInitResponse.create( request, dir );
+    final var handler = new DefaultAppInitRequestHandler();
+    final var response = handler.handleRequest( request );
 
     // THEN
     assertNotNull( response );
-    assertNotNull( response.request() );
-    assertEquals( name, response.request().appName() );
-    assertEquals( dir, response.appWorkingDirectory() );
+    assertEquals( request, response.request() );
+    assertEquals( "/tmp/" + appName, response.appWorkingDirectory().toString() );
+    Files.delete(response.appWorkingDirectory());
   }
 
-
-  @Test
-  void appResponseCreationFailureWithInvalidRequest () {
-    // GIVEN
-    final var dir = Path.of( FileUtils.getTempDirectoryPath() );
-
-    // WHEN
-    assertThrows( IllegalArgumentException.class, () -> AppInitResponse.create( null, dir ) );
-  }
-
-  @Test
-  void appResponseCreationFailureWithInvalidDir () {
-    // GIVEN
-    final var request = AppInitRequest.create( "test", "/tmp", true );
-
-    // WHEN
-    assertThrows( IllegalArgumentException.class, () -> AppInitResponse.create( request, null ) );
-  }
 }

@@ -22,30 +22,26 @@
 
 package ch.vd.gidac.application.appinit;
 
-import ch.vd.gidac.domain.core.policies.NotEmptyStringPolicy;
+import ch.vd.gidac.domain.core.ApplicationWorkingDirectory;
+import ch.vd.gidac.domain.core.InvalidApplicationDirectoryException;
 
 /**
- * Defines the request to initialise the application.
- *
- * @param appName the name of the application to initialize.
+ * Default implementation of the application initialization use case.
  *
  * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public record AppInitRequest( String appName, String baseDirectory, boolean useNative ) {
-  private static final NotEmptyStringPolicy policy = new NotEmptyStringPolicy();
+public class DefaultAppInitRequestHandler implements AppInitRequestHandler {
 
-  /**
-   * Create a new application request to generate the working directory for the application.
-   *
-   * @param name the name of the application.
-   * @return an instance of a request.
-   */
-  public static AppInitRequest create (final String name, final String baseDirectory, final boolean useNative) {
-    if (policy.test( name ) && policy.test( baseDirectory )) {
-      return new AppInitRequest( name, baseDirectory, useNative );
+  @Override
+  public AppInitResponse handleRequest (final AppInitRequest request) {
+    final var applicationWorkingDirectory =
+        ApplicationWorkingDirectory.create( request.appName(), request.baseDirectory(), request.useNative() );
+    applicationWorkingDirectory.createIfNotExists();
+    if (applicationWorkingDirectory.isValid()) {
+      return AppInitResponse.create( request, applicationWorkingDirectory.getRoot() );
     }
-    throw new IllegalArgumentException( "The name of the application to initialize is mandatory and must be a non empty alpha numeric string" );
+    throw new InvalidApplicationDirectoryException("The application working directory cannot be created");
   }
 }

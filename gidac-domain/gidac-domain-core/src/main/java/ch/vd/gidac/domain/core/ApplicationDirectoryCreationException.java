@@ -20,32 +20,33 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.application.appinit;
-
-import ch.vd.gidac.domain.core.policies.NotEmptyStringPolicy;
+package ch.vd.gidac.domain.core;
 
 /**
- * Defines the request to initialise the application.
- *
- * @param appName the name of the application to initialize.
+ * Indicates the application directory cannot be created.
  *
  * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public record AppInitRequest( String appName, String baseDirectory, boolean useNative ) {
-  private static final NotEmptyStringPolicy policy = new NotEmptyStringPolicy();
+public class ApplicationDirectoryCreationException extends RuntimeException {
+  public ApplicationDirectoryCreationException () {
+    super("The application directory cannot be created");
+  }
 
-  /**
-   * Create a new application request to generate the working directory for the application.
-   *
-   * @param name the name of the application.
-   * @return an instance of a request.
-   */
-  public static AppInitRequest create (final String name, final String baseDirectory, final boolean useNative) {
-    if (policy.test( name ) && policy.test( baseDirectory )) {
-      return new AppInitRequest( name, baseDirectory, useNative );
-    }
-    throw new IllegalArgumentException( "The name of the application to initialize is mandatory and must be a non empty alpha numeric string" );
+  public ApplicationDirectoryCreationException (String message) {
+    super( message );
+  }
+
+  public ApplicationDirectoryCreationException (String message, Throwable cause) {
+    super( message, cause );
+  }
+
+  public ApplicationDirectoryCreationException (Throwable cause) {
+    super( cause );
+  }
+
+  public ApplicationDirectoryCreationException (String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super( message, cause, enableSuppression, writableStackTrace );
   }
 }
