@@ -43,10 +43,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
   public Bootstrap (
       @Value("${application.name}") final String applicationName,
       @Value("${application.processing.fs-tree.tmp-dir") String applicationRootPath,
-      @Value("${application.processing.fs-tree.native-tmp") boolean useNative) {
+      @Value("${application.processing.fs-tree.native-tmp") String useNative) {
     this.applicationName = applicationName;
     this.applicationRootPath = applicationRootPath;
-    this.useNative = useNative;
+    this.useNative = Boolean.getBoolean( useNative );
   }
 
   @Override
