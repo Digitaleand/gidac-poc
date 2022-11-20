@@ -20,15 +20,16 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.application.appinit;
 
-import org.apache.commons.lang3.StringUtils;
+import ch.vd.gidac.application.api.RequestHandler;
 
-import java.util.function.Predicate;
-
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
-  }
+/**
+ * Contract for the application initialisation use case.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public interface AppInitRequestHandler extends RequestHandler<AppInitRequest, AppInitResponse> {
 }

@@ -20,15 +20,33 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.domain.core;
 
-import org.apache.commons.lang3.StringUtils;
+/**
+ * Indicates the application directory cannot be created.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class ApplicationDirectoryCreationException extends RuntimeException {
+  public ApplicationDirectoryCreationException () {
+    super("The application directory cannot be created");
+  }
 
-import java.util.function.Predicate;
+  public ApplicationDirectoryCreationException (String message) {
+    super( message );
+  }
 
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+  public ApplicationDirectoryCreationException (String message, Throwable cause) {
+    super( message, cause );
+  }
+
+  public ApplicationDirectoryCreationException (Throwable cause) {
+    super( cause );
+  }
+
+  public ApplicationDirectoryCreationException (String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super( message, cause, enableSuppression, writableStackTrace );
   }
 }

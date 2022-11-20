@@ -20,15 +20,28 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.domain.core;
 
-import org.apache.commons.lang3.StringUtils;
+/**
+ * Indicate that the application working directory is not valid.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class InvalidApplicationDirectoryException extends IllegalArgumentException {
+  public InvalidApplicationDirectoryException () {
+  }
 
-import java.util.function.Predicate;
+  public InvalidApplicationDirectoryException (final String message) {
+    super( message );
+  }
 
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+  public InvalidApplicationDirectoryException (final String message, final Throwable cause) {
+    super( message, cause );
+  }
+
+  public InvalidApplicationDirectoryException (final Throwable cause) {
+    super( cause );
   }
 }

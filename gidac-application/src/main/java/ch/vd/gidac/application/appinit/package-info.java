@@ -20,15 +20,12 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+/**
+ * This package defines the use case for the appliaction intialisation.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.function.Predicate;
-
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
-  }
-}
+package ch.vd.gidac.application.appinit;

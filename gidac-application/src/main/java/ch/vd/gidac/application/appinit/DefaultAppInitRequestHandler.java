@@ -20,15 +20,28 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.application.appinit;
 
-import org.apache.commons.lang3.StringUtils;
+import ch.vd.gidac.domain.core.ApplicationWorkingDirectory;
+import ch.vd.gidac.domain.core.InvalidApplicationDirectoryException;
 
-import java.util.function.Predicate;
+/**
+ * Default implementation of the application initialization use case.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class DefaultAppInitRequestHandler implements AppInitRequestHandler {
 
-public class NotEmptyStringPolicy implements Predicate<String> {
   @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+  public AppInitResponse handleRequest (final AppInitRequest request) {
+    final var applicationWorkingDirectory =
+        ApplicationWorkingDirectory.create( request.appName(), request.baseDirectory(), request.useNative() );
+    applicationWorkingDirectory.createIfNotExists();
+    if (applicationWorkingDirectory.isValid()) {
+      return AppInitResponse.create( request, applicationWorkingDirectory.getRoot() );
+    }
+    throw new InvalidApplicationDirectoryException("The application working directory cannot be created");
   }
 }

@@ -20,31 +20,46 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.application.appinit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class NotEmptyStringPolicyTest {
-  private final NotEmptyStringPolicy policy = new NotEmptyStringPolicy();
+class AppInitRequestTest {
 
-  @Test
-  void checkNotEmpty () {
-    assertTrue( policy.test( "test" ) );
+  @ParameterizedTest
+  @ValueSource(strings = { "test", "012test24", "TheAppl1cat10n" })
+  void createApplicationRequest (final String name) {
+    final var request = AppInitRequest.create( name, "/tmp", true );
+    assertNotNull( request );
+    assertEquals( name, request.appName() );
   }
 
   @ParameterizedTest
-  @ValueSource(strings = { "", " ", "   " })
-  void checkEmpty (final String value) {
-    assertFalse( policy.test( value ) );
+  @ValueSource(strings = { "", " ", "    " })
+  void unableToCreateAppRequest (final String name) {
+    assertThrows( IllegalArgumentException.class, () -> {
+      AppInitRequest.create( name, "tmp", true );
+    } );
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = { "", " ", "    " })
+  void unableToCreateAppRequestWithInvalidBaseDir(final String baseDir) {
+    assertThrows( IllegalArgumentException.class, () -> {
+      AppInitRequest.create( "test", baseDir, true );
+    } );
   }
 
   @Test
-  void checkNull () {
-    assertFalse( policy.test( null ) );
+  void invalidNullName() {
+    assertThrows( IllegalArgumentException.class, () -> {
+      AppInitRequest.create( null, "/tmp", true );
+    } );
   }
 }

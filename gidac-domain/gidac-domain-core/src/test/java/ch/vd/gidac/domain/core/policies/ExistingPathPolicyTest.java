@@ -22,13 +22,43 @@
 
 package ch.vd.gidac.domain.core.policies;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.function.Predicate;
+import java.nio.file.Paths;
 
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ExistingPathPolicyTest {
+
+  private final ExistingPathPolicy policy = new ExistingPathPolicy();
+
+  @Test
+  void validPolicy () {
+    // GIVEN
+    final var path = Paths.get( FileUtils.getTempDirectoryPath() );
+
+    // WHEN
+    final var result = policy.test( path );
+
+    // THEN
+    assertTrue( result );
   }
+
+  @ParameterizedTest
+  @ValueSource(strings = { "", "/tmp/1234", "/var/log/syslog" })
+  void execute (final String path) {
+    // GIVEN
+    final var p = Paths.get( path );
+
+    // WHEN
+    final var result = policy.test( p );
+
+    // THEN
+    assertFalse( result );
+  }
+
 }

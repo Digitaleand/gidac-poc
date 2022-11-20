@@ -22,6 +22,8 @@
 
 package ch.vd.gidac.presentation.web.configuration;
 
+import ch.vd.gidac.application.appinit.AppInitRequestHandler;
+import ch.vd.gidac.application.appinit.DefaultAppInitRequestHandler;
 import ch.vd.gidac.application.generatepdf.DefaultGeneratePdfRequestHandler;
 import ch.vd.gidac.application.generatepdf.GeneratePdfRequestHandler;
 import ch.vd.gidac.domain.core.pdf.PdfGenerator;
@@ -50,5 +52,10 @@ public class ApplicationConfiguration {
   @Bean
   GeneratePdfRequestHandler generatePdfRequestHandler() {
     return new DefaultGeneratePdfRequestHandler( pdfGenerator() );
+  }
+
+  @Bean
+  AppInitRequestHandler appInitRequestHandler() {
+    return new DefaultAppInitRequestHandler();
   }
 }

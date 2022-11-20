@@ -20,15 +20,32 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.domain.core.specifications;
 
-import org.apache.commons.lang3.StringUtils;
+import ch.vd.gidac.domain.core.policies.ExistingPathPolicy;
+import ch.vd.gidac.domain.core.policies.NotEmptyStringPolicy;
+import org.javatuples.Pair;
 
-import java.util.function.Predicate;
+import java.nio.file.Path;
 
-public class NotEmptyStringPolicy implements Predicate<String> {
+/**
+ * Specification to create the application directory.
+ *
+ * <p>The configuration of the application indicates the path to the location where the application working directory
+ * will be created. The name of the application is also the name of the working directory.</p>
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class ApplicationDirectoryCreationSpecification implements Specification<Pair<String, Path>> {
+
+  private final NotEmptyStringPolicy notEmptyStringPolicy = new NotEmptyStringPolicy();
+  private final ExistingPathPolicy existingPathPolicy = new ExistingPathPolicy();
+
   @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+  public boolean isSatisfiedBy (Pair<String, Path> payload) {
+    return notEmptyStringPolicy.test( payload.getValue0() ) &&
+        existingPathPolicy.test( payload.getValue1() );
   }
 }

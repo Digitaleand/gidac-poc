@@ -24,11 +24,47 @@ package ch.vd.gidac.domain.core.policies;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
+/**
+ * Check if a given path is valid according processing business rules.
+ *
+ * <p>The business rules is a bit larger than the simple existency. It checks that the path is readable and writable
+ * by the current process. This is important since this path is the root path of all {@code workingDirectories} for
+ * processing request.</p>
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
+public class ExistingPathPolicy implements Predicate<Path> {
+
+  private final Predicate<Path> isNotNull = Objects::nonNull;
+
+  private final Predicate<Path> isNotBlank = (p) -> {
+    final var s = p.toString();
     return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+  };
+
+  private final Predicate<Path> existing = Files::exists;
+
+  private final Predicate<Path> isDir = Files::isDirectory;
+
+  private final Predicate<Path> readable = Files::isReadable;
+
+  private final Predicate<Path> writable = Files::isWritable;
+
+  private final Predicate<Path> check = isNotNull.and( isNotBlank )
+      .and( existing )
+      .and( isDir )
+      .and( readable )
+      .and( writable );
+
+  @Override
+  public boolean test (final Path path) {
+    return check.test( path );
   }
 }

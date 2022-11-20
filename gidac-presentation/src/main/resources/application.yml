@@ -2,9 +2,25 @@ server:
   port: 8080
 
 application:
+  name: @application.name@
   context:
     request:
       requestIdHeader: x-request-id
+  run:
+    antivirus-scan:
+      enabled: 0
+    processing:
+      enabled: dita
+      fs-tree:
+        native-tmp: true
+        tmp-dir: '/tmp'
+      dita:
+        embedded-toolkit: true
+        toolkit-path: ''
+      chemistry: { }
+    java:
+      use-embedded: true
+      version: '17'
 
 spring:
   security:

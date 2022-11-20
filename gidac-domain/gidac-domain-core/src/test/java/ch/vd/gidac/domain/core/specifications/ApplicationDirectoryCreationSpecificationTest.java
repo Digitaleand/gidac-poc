@@ -20,15 +20,29 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.domain.core.specifications;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
+import org.javatuples.Pair;
+import org.junit.jupiter.api.Test;
 
-import java.util.function.Predicate;
+import java.nio.file.Path;
 
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ApplicationDirectoryCreationSpecificationTest {
+
+  @Test
+  void validApplicationDirectory() {
+    // GIVEN
+    final var name = "giroflon";
+    final var path = Path.of( FileUtils.getTempDirectoryPath() );
+
+    // WHEN
+    final var spec = new ApplicationDirectoryCreationSpecification();
+    final var result = spec.isSatisfiedBy( Pair.with( name, path ) );
+
+    // THEN
+    assertTrue(result);
   }
 }

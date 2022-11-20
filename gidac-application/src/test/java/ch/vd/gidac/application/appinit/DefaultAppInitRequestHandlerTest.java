@@ -20,15 +20,34 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.domain.core.policies;
+package ch.vd.gidac.application.appinit;
 
-import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
 
-import java.util.function.Predicate;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.UUID;
 
-public class NotEmptyStringPolicy implements Predicate<String> {
-  @Override
-  public boolean test (final String s) {
-    return StringUtils.isNotEmpty( s ) && StringUtils.isNotBlank( s );
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class DefaultAppInitRequestHandlerTest {
+
+  @Test
+  void initializationSuccess() throws IOException {
+    // GIVEN
+    final var appName = UUID  .randomUUID().toString();
+    final var request = AppInitRequest.create( appName, "/tmp", true );
+
+    // WHEN
+    final var handler = new DefaultAppInitRequestHandler();
+    final var response = handler.handleRequest( request );
+
+    // THEN
+    assertNotNull( response );
+    assertEquals( request, response.request() );
+    assertEquals( "/tmp/" + appName, response.appWorkingDirectory().toString() );
+    Files.delete(response.appWorkingDirectory());
   }
+
 }
