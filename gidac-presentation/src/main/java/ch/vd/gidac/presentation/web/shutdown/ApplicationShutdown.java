@@ -59,5 +59,11 @@ public class ApplicationShutdown extends BaseApplicationLifecycleHook implements
   public void onApplicationEvent (ContextClosedEvent event) {
     log.info( "Handling the application shutdown" );
     final var request = AppShutdownRequest.create( applicationName, applicationRootPath, useNative );
+    final var response = appShutdownRequestHandler.handleRequest( request );
+    if(response.succeed()) {
+      log.info("Application successfully cleaned up");
+    } else {
+      log.info("Unable to cleanup the application working directory");
+    }
   }
 }
