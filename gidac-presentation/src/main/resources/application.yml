@@ -2,7 +2,7 @@ server:
   port: 8080
 
 application:
-  name: @application.name@
+  name: GidacPoc #@application.name@
   context:
     request:
       requestIdHeader: x-request-id

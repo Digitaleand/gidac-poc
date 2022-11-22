@@ -52,7 +52,7 @@ class AppInitRequestTest {
   @ValueSource(strings = { "", " ", "    " })
   void unableToCreateAppRequestWithInvalidBaseDir(final String baseDir) {
     assertThrows( IllegalArgumentException.class, () -> {
-      AppInitRequest.create( "test", baseDir, true );
+      AppInitRequest.create( "test", baseDir, false );
     } );
   }
 

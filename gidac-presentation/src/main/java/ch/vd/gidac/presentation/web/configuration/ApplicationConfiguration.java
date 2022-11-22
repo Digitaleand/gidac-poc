@@ -24,6 +24,8 @@ package ch.vd.gidac.presentation.web.configuration;
 
 import ch.vd.gidac.application.appinit.AppInitRequestHandler;
 import ch.vd.gidac.application.appinit.DefaultAppInitRequestHandler;
+import ch.vd.gidac.application.appshutdown.AppShutdownRequestHandler;
+import ch.vd.gidac.application.appshutdown.DefaultAppShutdownRequestHandler;
 import ch.vd.gidac.application.generatepdf.DefaultGeneratePdfRequestHandler;
 import ch.vd.gidac.application.generatepdf.GeneratePdfRequestHandler;
 import ch.vd.gidac.domain.core.pdf.PdfGenerator;
@@ -57,5 +59,10 @@ public class ApplicationConfiguration {
   @Bean
   AppInitRequestHandler appInitRequestHandler() {
     return new DefaultAppInitRequestHandler();
+  }
+
+  @Bean
+  AppShutdownRequestHandler appShutdownRequestHandler() {
+    return new DefaultAppShutdownRequestHandler();
   }
 }

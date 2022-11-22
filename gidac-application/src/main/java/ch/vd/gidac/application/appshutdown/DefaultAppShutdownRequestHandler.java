@@ -20,33 +20,24 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.application.appinit;
+package ch.vd.gidac.application.appshutdown;
 
-import ch.vd.gidac.domain.core.policies.NotEmptyStringPolicy;
+import ch.vd.gidac.domain.core.ApplicationWorkingDirectory;
 
 /**
- * Defines the request to initialise the application.
- *
- * @param appName the name of the application to initialize.
+ * Execute the application shutdown process.
  *
  * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-public record AppInitRequest( String appName, String baseDirectory, boolean useNative ) {
-  private static final NotEmptyStringPolicy policy = new NotEmptyStringPolicy();
+public class DefaultAppShutdownRequestHandler implements AppShutdownRequestHandler {
 
-  /**
-   * Create a new application request to generate the working directory for the application.
-   *
-   * @param name the name of the application.
-   *
-   * @return an instance of a request.
-   */
-  public static AppInitRequest create (final String name, final String baseDirectory, final boolean useNative) {
-    if (policy.test( name ) && ( useNative || policy.test( baseDirectory ) )) {
-      return new AppInitRequest( name, baseDirectory, useNative );
-    }
-    throw new IllegalArgumentException( "The name of the application to initialize is mandatory and must be a non empty alpha numeric string" );
+  @Override
+  public AppShutdownResponse handleRequest (final AppShutdownRequest request) {
+    final var awd =
+        ApplicationWorkingDirectory.create(request.applicatinoName(), request.rootPath(), request.useNative());
+    final var response = awd.cleanup();
+    return AppShutdownResponse.create( request, response );
   }
 }
