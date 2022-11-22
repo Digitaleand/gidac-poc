@@ -23,9 +23,13 @@
 package ch.vd.gidac.domain.core.pdf.chemistry;
 
 import ch.vd.gidac.domain.core.DitaMap;
+import ch.vd.gidac.domain.core.PdfGenerationException;
 import ch.vd.gidac.domain.core.WorkingDirectory;
 import ch.vd.gidac.domain.core.pdf.PdfGenerator;
+import ch.vd.gidac.domain.core.pdf.processor.ProcessingRecipe;
 import ch.vd.gidac.domain.core.pdf.processor.Processor;
+
+import java.io.IOException;
 
 /**
  * Default implementation of the pdf generator.
@@ -37,17 +41,32 @@ public class ChemistryPdfGenerator implements PdfGenerator {
 
   private final Processor processor;
 
+  private final String ditaBinPath;
+
   /**
    * Create an instance of the generator with a given processor.
    *
    * @param processor the processor to use to send information to the Process.
    */
-  public ChemistryPdfGenerator( final Processor processor ) {
+  public ChemistryPdfGenerator (final Processor processor, final String ditaBinPath) {
     this.processor = processor;
+    this.ditaBinPath = ditaBinPath;
   }
 
   @Override
-  public void generatePdf( WorkingDirectory directory, DitaMap ditaMap ) {
-
+  public void generatePdf (WorkingDirectory directory, DitaMap ditaMap) {
+    final var processingRecipe = ProcessingRecipe.builder()
+        .executable( ditaBinPath )
+        .format( "pdf" )
+        .outputDir( directory.outputDirectory().toString() )
+        .tmpDir( directory.tmpDirectory().toString() )
+        .ditaMap( ditaMap.value().toString() )
+        .verbose( false )
+        .build();
+    try {
+      processor.execute( processingRecipe );
+    } catch (InterruptedException | IOException ex) {
+      throw new PdfGenerationException( ex );
+    }
   }
 }

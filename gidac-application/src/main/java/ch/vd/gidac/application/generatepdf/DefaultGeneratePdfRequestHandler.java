@@ -27,6 +27,13 @@ import ch.vd.gidac.domain.core.RequestId;
 import ch.vd.gidac.domain.core.SimplePdfGenerationRecipeFactory;
 import ch.vd.gidac.domain.core.pdf.PdfGenerator;
 
+/**
+ * Default request handler to generate the pdf.
+ *
+ * @author Mehdi Lefebvre
+ * @version 0.0.1
+ * @since 0.0.1
+ */
 public class DefaultGeneratePdfRequestHandler implements GeneratePdfRequestHandler {
 
   private final PdfGenerator pdfGenerator;

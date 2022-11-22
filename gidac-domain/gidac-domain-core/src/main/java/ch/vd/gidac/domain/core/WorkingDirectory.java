@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static ch.vd.gidac.domain.manifest.ManifestDecorator.MANIFEST_FILE_NAME;
 
@@ -46,11 +47,24 @@ import static ch.vd.gidac.domain.manifest.ManifestDecorator.MANIFEST_FILE_NAME;
  * @version 0.0.1
  * @since 0.0.1
  */
-public record WorkingDirectory( Path root, Path inputDirectory, Path outputDirectory ) {
+public record WorkingDirectory( Path root, Path inputDirectory, Path outputDirectory, Path tmpDirectory ) {
+
+  public WorkingDirectory {
+    // This produce a double validation
+    // TODO: refactor records factories to use canonical / compact constructor.
+    // TODO: refactor the workding directory creation to avoid the double check.
+    check( root, inputDirectory, outputDirectory, tmpDirectory );
+  }
+
+  public WorkingDirectory(final Path root, final Path inputDirectory, final Path outputDirectory) {
+    this(root, inputDirectory, outputDirectory, root.resolve( TMP_DIRECTORY ));
+  }
 
   private static final String OUTPUT_DIRECTORY = "output";
 
   private static final String INPUT_DIRECTORY = "input";
+
+  private static final String TMP_DIRECTORY = "tmp";
 
   private static final String DIRTY_FILENAME = ".dirty";
 
@@ -77,6 +91,7 @@ public record WorkingDirectory( Path root, Path inputDirectory, Path outputDirec
     }
     Files.deleteIfExists( outputDirectory );
     Files.deleteIfExists( inputDirectory );
+    Files.deleteIfExists( tmpDirectory );
     Files.deleteIfExists( root );
     return this;
   }
@@ -209,6 +224,18 @@ public record WorkingDirectory( Path root, Path inputDirectory, Path outputDirec
     }
   }
 
+  private static void check(final Path root, final Path inputDirectory, final Path outputDirectory, final Path tmpDirectory) {
+    // TODO: review the specification to include the temporary directory.
+    final var specification = new ValidWorkingDirectorySpecification();
+    if (!specification.isSatisfiedBy( Arrays.asList( root, inputDirectory, outputDirectory ) )) {
+      throw new IllegalStateException( "All directories must exists in order to create a Working directory" );
+    }
+    // Put this logic in the specification.
+    if (Objects.isNull( inputDirectory )) {
+      throw new IllegalStateException("the temporary directory cannot be null");
+    }
+  }
+
   /**
    * Create a working directory from an existing layout.
    *
@@ -222,10 +249,7 @@ public record WorkingDirectory( Path root, Path inputDirectory, Path outputDirec
    */
   public static WorkingDirectory create (final Path root, final Path inputDirectory, final Path outputDirectory)
       throws IOException {
-    final var specification = new ValidWorkingDirectorySpecification();
-    if (!specification.isSatisfiedBy( Arrays.asList( root, inputDirectory, outputDirectory ) )) {
-      throw new IllegalStateException( "All directories must exists in order to create a Working directory" );
-    }
+    check( root, inputDirectory, outputDirectory, outputDirectory.resolve( TMP_DIRECTORY ) );
     return new WorkingDirectory( root, inputDirectory, outputDirectory );
   }
 
@@ -239,6 +263,7 @@ public record WorkingDirectory( Path root, Path inputDirectory, Path outputDirec
    * @throws IOException thrown if something goes wrong during the creation of the working directory layout.
    */
   public static WorkingDirectory create (final RequestId requestId) throws IOException {
+    // TODO: review the implementation to allow the creation of a directory with a non native temporary directory structure.
     final var rootDirectory = Files.createTempDirectory( requestId.value().toString() );
     final var inputDirectory = Files.createDirectory( rootDirectory.resolve( INPUT_DIRECTORY ) );
     final var outputDirectory = Files.createDirectory( rootDirectory.resolve( OUTPUT_DIRECTORY ) );
