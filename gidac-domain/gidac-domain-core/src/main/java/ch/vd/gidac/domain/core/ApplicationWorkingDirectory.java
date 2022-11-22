@@ -70,7 +70,38 @@ public record ApplicationWorkingDirectory( Path path, String name ) {
     return policy.test( path );
   }
 
-  public static ApplicationWorkingDirectory create (final String appName, final String rootDir, final boolean useNativeTemporaryFs) {
+  /**
+   * Clean up the application workding directory.
+   *
+   * @return {@code true} if the process succeeds, {@code false} otherwise.
+   */
+  public boolean cleanup () {
+    return true;
+  }
+
+  /**
+   * Get the root path of the application working directory.
+   *
+   * @return the path to the working directory.
+   */
+  public Path getRoot () {
+    return path.resolve( name );
+  }
+
+  /**
+   * Create a new instance of the {@code ApplicationWorkingDirectory}.
+   *
+   * @param appName              the name of the application.
+   * @param rootDir              the root directory.
+   * @param useNativeTemporaryFs indicates if the system will use the native API.
+   *
+   * @return a new instance of the workding directory
+   *
+   * @throws InvalidApplicationDirectoryException thrown if the application workding directory cannot be created.
+   */
+  public static ApplicationWorkingDirectory create (final String appName,
+                                                    final String rootDir,
+                                                    final boolean useNativeTemporaryFs) {
     final var specification = new ApplicationDirectoryCreationSpecification();
     Path path;
     if (useNativeTemporaryFs) {
@@ -81,10 +112,7 @@ public record ApplicationWorkingDirectory( Path path, String name ) {
     if (specification.isSatisfiedBy( Pair.with( appName, path ) )) {
       return new ApplicationWorkingDirectory( path, appName );
     }
-    throw new InvalidApplicationDirectoryException("The provided arguments cannot be used to create a valid application working directory");
-  }
-
-  public Path getRoot() {
-    return path.resolve( name );
+    throw new InvalidApplicationDirectoryException( "The provided arguments cannot be used to create a " +
+        "valid application working directory" );
   }
 }

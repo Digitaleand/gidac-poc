@@ -20,54 +20,44 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.presentation.web.startup;
+package ch.vd.gidac.presentation.web.shutdown;
 
-import ch.vd.gidac.application.appinit.AppInitRequest;
-import ch.vd.gidac.application.appinit.AppInitRequestHandler;
+import ch.vd.gidac.application.appshutdown.AppShutdownRequest;
+import ch.vd.gidac.application.appshutdown.AppShutdownRequestHandler;
 import ch.vd.gidac.presentation.web.core.hooks.BaseApplicationLifecycleHook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
 /**
- * Bootstrap the application.
+ * Shutdown the application.
  *
- * @author Mehdi Lefbevre
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
 @Component
-public class Bootstrap extends BaseApplicationLifecycleHook implements ApplicationListener<ContextRefreshedEvent> {
+public class ApplicationShutdown extends BaseApplicationLifecycleHook implements ApplicationListener<ContextClosedEvent> {
 
-  private static final Logger log = LogManager.getLogger( Bootstrap.class );
+  private final AppShutdownRequestHandler appShutdownRequestHandler;
 
-  private final AppInitRequestHandler appInitRequestHandler;
+  private static final Logger log = LogManager.getLogger( ApplicationShutdown.class );
 
-  public Bootstrap (
+  public ApplicationShutdown (
       @Value("${application.name}") final String applicationName,
       @Value("${application.run.processing.fs-tree.tmp-dir}") String applicationRootPath,
       @Value("${application.run.processing.fs-tree.native-tmp}") String useNative,
-      final AppInitRequestHandler appInitRequestHandler) {
-    super(applicationName, applicationRootPath, useNative);
-    this.appInitRequestHandler = appInitRequestHandler;
+      final AppShutdownRequestHandler appShutdownRequestHandler) {
+    super( applicationName, applicationRootPath, useNative );
+    this.appShutdownRequestHandler = appShutdownRequestHandler;
   }
 
   @Override
-  public void onApplicationEvent (final ContextRefreshedEvent event) {
-    log.info( "Handling application startup, preparing the application context" );
-    log.debug( "The configuration will use {} as application name, {} as application root working directory and {} use the native  temporary directory",
-        applicationName, applicationRootPath, useNative ? "will" : "won't" );
-    try {
-      final var request = AppInitRequest.create( applicationName, applicationRootPath, useNative );
-
-      final var response = appInitRequestHandler.handleRequest( request );
-      log.info( "The application has been initialised in {}", response.appWorkingDirectory() );
-    } catch (final Exception e) {
-      log.error( "An error occurred during the application initialisation process with message {}", e.getMessage() );
-      throw e;
-    }
+  public void onApplicationEvent (ContextClosedEvent event) {
+    log.info( "Handling the application shutdown" );
+    final var request = AppShutdownRequest.create( applicationName, applicationRootPath, useNative );
   }
 }
