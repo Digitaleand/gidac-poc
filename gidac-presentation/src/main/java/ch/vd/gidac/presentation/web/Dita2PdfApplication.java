@@ -39,7 +39,7 @@ public class Dita2PdfApplication {
    *
    * @param args command line arguments
    */
-  public static void main( String[] args ) {
+  public static void main( final String[] args ) {
     SpringApplication.run( Dita2PdfApplication.class, args );
   }
 }

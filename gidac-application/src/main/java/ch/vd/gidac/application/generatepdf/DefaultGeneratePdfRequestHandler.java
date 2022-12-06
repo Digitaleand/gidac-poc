@@ -43,7 +43,7 @@ public class DefaultGeneratePdfRequestHandler implements GeneratePdfRequestHandl
   }
 
   @Override
-  public GeneratePdfResponse handleRequest( GeneratePdfRequest request ) {
+  public GeneratePdfResponse handleRequest( final GeneratePdfRequest request ) {
     PdfGenerationRecipe recipe = null;
     try {
       final var factory = new SimplePdfGenerationRecipeFactory();

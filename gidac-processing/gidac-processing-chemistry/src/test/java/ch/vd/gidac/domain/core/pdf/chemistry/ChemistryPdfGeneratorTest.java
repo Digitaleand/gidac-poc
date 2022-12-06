@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 
 class ChemistryPdfGeneratorTest {
 
-  class ProcessingRecipeMatcher implements ArgumentMatcher<ProcessingRecipe> {
+  static class ProcessingRecipeMatcher implements ArgumentMatcher<ProcessingRecipe> {
 
     private final ProcessingRecipe recipe;
 

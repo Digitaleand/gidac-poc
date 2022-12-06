@@ -54,7 +54,7 @@ public class ChemistryPdfGenerator implements PdfGenerator {
   }
 
   @Override
-  public void generatePdf (WorkingDirectory directory, DitaMap ditaMap) {
+  public void generatePdf (final WorkingDirectory directory, final DitaMap ditaMap) {
     final var processingRecipe = ProcessingRecipe.builder()
         .executable( ditaBinPath )
         .format( "pdf" )
@@ -65,7 +65,7 @@ public class ChemistryPdfGenerator implements PdfGenerator {
         .build();
     try {
       processor.execute( processingRecipe );
-    } catch (InterruptedException | IOException ex) {
+    } catch (final InterruptedException | IOException ex) {
       throw new PdfGenerationException( ex );
     }
   }
