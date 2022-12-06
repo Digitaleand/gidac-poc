@@ -26,10 +26,12 @@ import ch.vd.gidac.domain.core.DitaMap;
 import ch.vd.gidac.domain.core.WorkingDirectory;
 import ch.vd.gidac.domain.core.pdf.processor.ProcessingRecipe;
 import ch.vd.gidac.domain.core.pdf.processor.Processor;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -57,8 +59,11 @@ class ChemistryPdfGeneratorTest {
   void generatePdf() throws IOException, InterruptedException {
     // GIVEN
     final var root = Paths.get( "/tmp/gidac/test01" );
+    Files.createDirectories( root );
     final var input = root.resolve( "input" );
+    Files.createDirectories( input );
     final var output = root.resolve( "output" );
+    Files.createDirectories( output );
     final var wd = WorkingDirectory.create( root, input, output );
     final var ditaMap = DitaMap.fromPath( input.resolve( "flowers/flowers.ditamap" ) );
     final var processor = mock( Processor.class );
@@ -77,5 +82,6 @@ class ChemistryPdfGeneratorTest {
         .tmpDir( root.resolve( "tmp" ).toString() )
         .build();
     verify( processor, times(1) ).execute( argThat( new ProcessingRecipeMatcher( recipe ) ) );
+    FileUtils.deleteDirectory( root.toFile() );
   }
 }
