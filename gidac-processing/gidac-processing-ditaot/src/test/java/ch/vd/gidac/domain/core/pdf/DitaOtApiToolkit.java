@@ -36,8 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class DitaOtApiToolkit {
 
-  private static final Logger log = LogManager.getFormatterLogger(DitaOtApiToolkit.class);
-
   @Test
   void check() throws DITAOTException, IOException {
     final var ditaRoot = Paths.get( "/home/mehdi/Applications/dita-ot-4.0" );
@@ -52,5 +50,8 @@ public class DitaOtApiToolkit {
         .run();
     final var list = Files.list( outputDir );
     assertFalse(list.toList().isEmpty());
+    try {
+      list.close();
+    } catch(Exception ignore) {}
   }
 }
