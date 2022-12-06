@@ -22,7 +22,6 @@
 
 package ch.vd.gidac.domain.core.io;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

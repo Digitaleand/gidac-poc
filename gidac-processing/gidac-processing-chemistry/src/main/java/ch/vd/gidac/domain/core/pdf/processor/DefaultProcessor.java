@@ -35,6 +35,8 @@ public class DefaultProcessor implements Processor {
   private static final Logger log = LogManager.getLogger( DefaultProcessor.class );
 
   private String getCommandString( final ProcessingRecipe processingRecipe ) {
+    log.info("Generating command");
+
     final var command = new StringBuilder();
     command.append( processingRecipe.executable() )
         .append( " " )
@@ -66,7 +68,11 @@ public class DefaultProcessor implements Processor {
           .append( "-v" );
     }
 
-    return command.toString();
+    final var cmd = command.toString();
+
+    log.trace("The command will be {}", cmd);
+
+    return cmd;
   }
 
   @Override
