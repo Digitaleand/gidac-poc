@@ -29,6 +29,10 @@ import ch.vd.gidac.application.appshutdown.DefaultAppShutdownRequestHandler;
 import ch.vd.gidac.application.generatepdf.DefaultGeneratePdfRequestHandler;
 import ch.vd.gidac.application.generatepdf.GeneratePdfRequestHandler;
 import ch.vd.gidac.domain.core.pdf.PdfGenerator;
+import ch.vd.gidac.domain.core.pdf.chemistry.ChemistryPdfGenerator;
+import ch.vd.gidac.domain.core.pdf.processor.DefaultProcessor;
+import ch.vd.gidac.domain.core.pdf.processor.Processor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,9 +45,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationConfiguration {
 
+  @Value( "${application.run.processing.dita.toolkit-path}" )
+  private String ditaToolkotPath;
+
+  @Bean
+  Processor processor() {
+    return new DefaultProcessor();
+  }
+
   @Bean
   PdfGenerator pdfGenerator() {
-    return null;
+    return new ChemistryPdfGenerator(processor(), ditaToolkotPath);
   }
 
   /**

@@ -20,26 +20,35 @@
  * SOFTWARE.
  */
 
-package ch.vd.gidac.presentation.web;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package ch.vd.gidac.domain.core;
 
 /**
- * Application for dita2pdf rest api.
+ * Indicates that the pdf generation process fails.
  *
+ * @author Mehdi Lefebvre
  * @version 0.0.1
  * @since 0.0.1
  */
-@SpringBootApplication
-public class Dita2PdfApplication {
+public class PdfGenerationException extends RuntimeException {
+  public PdfGenerationException () {
+  }
 
-  /**
-   * Main entry point for the applicatin.
-   *
-   * @param args command line arguments
-   */
-  public static void main( final String[] args ) {
-    SpringApplication.run( Dita2PdfApplication.class, args );
+  public PdfGenerationException (final String message) {
+    super( message );
+  }
+
+  public PdfGenerationException (final String message, final Throwable cause) {
+    super( message, cause );
+  }
+
+  public PdfGenerationException (final Throwable cause) {
+    super( cause );
+  }
+
+  public PdfGenerationException (final String message,
+                                 final Throwable cause,
+                                 final  boolean enableSuppression,
+                                 final boolean writableStackTrace) {
+    super( message, cause, enableSuppression, writableStackTrace );
   }
 }
