@@ -28,19 +28,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 @Disabled("Just for demonstration purpose")
 class DefaultProcessoorIntegrationTest {
 
   @Test
-  void checkCommandLineProcessing () throws IOException {
+  void checkCommandLineProcessing () {
     // GIVEN
     final var commandLine = "/home/georgette/Applications/oxygen-publishing-engine-3.x/bin/dita " +
         "--input=/tmp/863762cc-d71d-49d9-8ee6-586ef12cab6812161336840445757620/input/flowers/flowers.ditamap " +
         "--format=pdf-css-html5 " +
         "--output=/tmp/863762cc-d71d-49d9-8ee6-586ef12cab6812161336840445757620/output " +
-        "--style=/tmp/863762cc-d71d-49d9-8ee6-586ef12cab6812161336840445757620/input/custom/main.css " +
+       // "--style=/tmp/863762cc-d71d-49d9-8ee6-586ef12cab6812161336840445757620/input/custom/main.css " +
         "--temp=/tmp/863762cc-d71d-49d9-8ee6-586ef12cab6812161336840445757620/tmp";
 
     // WHEN
