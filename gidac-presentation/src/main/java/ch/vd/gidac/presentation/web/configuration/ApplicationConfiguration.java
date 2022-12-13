@@ -46,7 +46,10 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfiguration {
 
   @Value( "${application.run.processing.dita.toolkit-path}" )
-  private String ditaToolkotPath;
+  private String ditaToolkitPath;
+
+  @Value( "${application.run.processing.chemistry.toolkit-path}" )
+  private String chemistryToolkitPath;
 
   @Bean
   Processor processor() {
@@ -55,7 +58,7 @@ public class ApplicationConfiguration {
 
   @Bean
   PdfGenerator pdfGenerator() {
-    return new ChemistryPdfGenerator(processor(), ditaToolkotPath);
+    return new ChemistryPdfGenerator(processor(), chemistryToolkitPath );
   }
 
   /**

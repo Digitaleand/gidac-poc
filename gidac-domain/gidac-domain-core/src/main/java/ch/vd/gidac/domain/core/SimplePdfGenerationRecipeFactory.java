@@ -48,7 +48,7 @@ public class SimplePdfGenerationRecipeFactory implements PdfGenerationRecipeFact
   @Override
   public PdfGenerationRecipe create() {
     if ( !canCreate() ) {
-      throw new IllegalStateException( "The recipe cannot be generate with the curently defined state" );
+      throw new IllegalStateException( "The recipe cannot be generate with the currently defined state" );
     }
     return new PdfGenerationRecipe( requestId, archive );
   }

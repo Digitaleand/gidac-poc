@@ -29,8 +29,6 @@ import ch.vd.gidac.domain.core.pdf.PdfGenerator;
 import ch.vd.gidac.domain.core.pdf.processor.ProcessingRecipe;
 import ch.vd.gidac.domain.core.pdf.processor.Processor;
 
-import java.io.IOException;
-
 /**
  * Default implementation of the pdf generator.
  *
@@ -57,15 +55,17 @@ public class ChemistryPdfGenerator implements PdfGenerator {
   public void generatePdf (final WorkingDirectory directory, final DitaMap ditaMap) {
     final var processingRecipe = ProcessingRecipe.builder()
         .executable( ditaBinPath )
-        .format( "pdf" )
+        //.format( "pdf" )
+        .format( "pdf-css-html5" )
         .outputDir( directory.outputDirectory().toString() )
         .tmpDir( directory.tmpDirectory().toString() )
-        .ditaMap( ditaMap.value().toString() )
+        .style( directory.inputDirectory().resolve( "custom" ).resolve( "main.css" ).toString() )
+        .ditaMap( directory.inputDirectory().resolve( "flowers" ).resolve( ditaMap.value() ).toString() ) // ditaMap.value().toString()
         .verbose( false )
         .build();
     try {
       processor.execute( processingRecipe );
-    } catch (final InterruptedException | IOException ex) {
+    } catch (final Exception ex) {
       throw new PdfGenerationException( ex );
     }
   }

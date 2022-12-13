@@ -16,8 +16,10 @@ application:
         tmp-dir: '/tmp'
       dita:
         embedded-toolkit: true
-        toolkit-path: ''
-      chemistry: { }
+        toolkit-path: '/home/georgette/Applications/dita-ot-4.0/bin/dita'
+      chemistry:
+        embedded-toolkit: false
+        toolkit-path: '/home/georgette/Applications/oxygen-publishing-engine-3.x/bin/dita'
     java:
       use-embedded: true
       version: '17'

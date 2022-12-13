@@ -24,6 +24,8 @@ package ch.vd.gidac.presentation.web.pdfgen;
 
 import ch.vd.gidac.application.generatepdf.GeneratePdfRequest;
 import ch.vd.gidac.application.generatepdf.GeneratePdfRequestHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,6 +48,8 @@ import java.io.IOException;
 @RestController()
 @RequestMapping("/binaries")
 public class PdfGenerationRestController {
+
+  private static final Logger log = LogManager.getLogger(PdfGenerationRestController.class);
 
   /**
    * Archive factory to use to read information from the request.
@@ -86,6 +90,11 @@ public class PdfGenerationRestController {
       final var request = new GeneratePdfRequest( requestId, archive );
       final var response = requestHandler.handleRequest( request );
       final var headers = new HttpHeaders();
+      if(null == response.binary()) {
+        log.trace( "The binary is null. It indicates the process is in error" );
+        log.info( response.exception().getMessage() );
+        return ResponseEntity.badRequest().build();
+      }
       headers.setContentType( MediaType.parseMediaType( response.binary().mimeType() ) );
       headers.setContentDispositionFormData( response.binary().name(), response.binary().name() );
       return new ResponseEntity<>( response.binary().payload(), headers, HttpStatus.OK );

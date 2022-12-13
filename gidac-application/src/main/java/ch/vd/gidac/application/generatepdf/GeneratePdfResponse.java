@@ -27,10 +27,10 @@ import ch.vd.gidac.domain.core.Binary;
 /**
  * The response of the processing.
  *
- * @param request the request which has been processed
- * @param binary  the binary content which represent the payload generated (if the request has been successfully
- *                completed)
- * @param e       the exception which occurs during the processing if something goes wrong during that.
+ * @param request   the request which has been processed
+ * @param binary    the binary content which represent the payload generated (if the request has been successfully
+ *                  completed)
+ * @param exception the exception which occurs during the processing if something goes wrong during that.
  */
-public record GeneratePdfResponse(GeneratePdfRequest request, Binary binary, Exception e) {
+public record GeneratePdfResponse( GeneratePdfRequest request, Binary binary, Exception exception ) {
 }

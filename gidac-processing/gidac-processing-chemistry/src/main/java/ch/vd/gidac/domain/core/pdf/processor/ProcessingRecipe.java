@@ -132,8 +132,9 @@ public record ProcessingRecipe(String executable, // the absolute path to the ex
      * @throws IllegalArgumentException thrown if the format is not supported.
      */
     public Builder format( final String format ) {
-      if (!"pdf".equals( format )) {
-        throw new UnsupportedFormatException("The only supported format is pdf");
+      if (!"pdf".equals( format )  && ! "pdf-css-html5".equals( format )) {
+        throw new UnsupportedFormatException("The only supported formats are pdf (for raw dita-ot) " +
+            "and pdf-css-html5 (for chemistry processing)");
       }
       this.format = format;
       return this;

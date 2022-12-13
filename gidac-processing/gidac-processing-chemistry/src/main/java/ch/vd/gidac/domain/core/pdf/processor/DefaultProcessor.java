@@ -85,7 +85,8 @@ public class DefaultProcessor implements Processor {
       final var commandLine = CommandLine.parse( command );
       final var executor = new DefaultExecutor();
       executor.setExitValue( 0 );
-      final var exitCode = executor.execute( commandLine, env );
+      // final var exitCode = executor.execute( commandLine, env );
+      final var exitCode = executor.execute( commandLine );
       if ( exitCode != 0 ) {
         throw new RuntimeException( "The generation process fails with exit code " + exitCode );
       }
